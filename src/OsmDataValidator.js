@@ -23,6 +23,7 @@ Changes:
 /* ------------------------------------------------------------------------------------------------------------------------- */
 
 import theOsmData from './OsmData.js';
+import theReport from './Report.js';
 import theRouteValidator from './RouteValidator.js';
 
 /* ------------------------------------------------------------------------------------------------------------------------- */
@@ -39,11 +40,11 @@ class OsmDataValidator {
 	 */
 
 	validateRouteMaster ( routeMaster ) {
-		console.error (
-			'\n\nNow validating route_master ' +
+		theReport.addH1 (
+			'Now validating route_master ' +
             ( routeMaster.tags.name ?? '' ) + ' ' +
             ( routeMaster.tags.description ?? '' ) +
-            ' ( id: ' + routeMaster.id + ' )\n'
+            ' ( ' + theReport.getOsmLink ( routeMaster ) + ' )'
 		);
 
 		routeMaster.members.forEach (
@@ -54,13 +55,13 @@ class OsmDataValidator {
 						theRouteValidator.validateRoute ( route );
 					}
 					else {
-						console.error ( '\tA member of the route master is not a bus relation' );
+						theReport.addP ( 'A member of the route master is not a bus relation' );
 					}
 
 				}
 				else {
-					console.error (
-						'\tA member of the route master is not a relation (' +
+					theReport.addP (
+						'A member of the route master is not a relation (' +
                         member.type + ' ' + member.ref + ' )'
 					);
 				}

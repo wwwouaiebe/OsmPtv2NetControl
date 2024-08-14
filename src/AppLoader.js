@@ -26,6 +26,8 @@ import process from 'process';
 import theConfig from './Config.js';
 import OsmDataLoader from './OsmDataLoader.js';
 import OsmDataValidator from './OsmDataValidator.js';
+import theReport from './Report.js';
+import childProcess from 'child_process';
 
 /* ------------------------------------------------------------------------------------------------------------------------- */
 /**
@@ -114,9 +116,18 @@ class AppLoader {
 
 	async loadApp ( /* options */ ) {
 		this.#createConfig ( );
+		theReport.open ( );
+		theReport.addP (
+			'Request : ' +
+			theConfig.osmType + ' ' +
+			( 0 === theConfig.osmArea ? '' : '- area : ' + theConfig.osmArea ) +
+			( 0 === theConfig.osmRelation ? '' : 'relation : ' + theConfig.osmRelation )
+		);
 		await new OsmDataLoader ( ).fetchData ( );
 		new OsmDataValidator ( ).validate ( );
-		console.error ( '\n\n' );
+		theReport.close ( );
+		console.error ( '\n\t... launching in the browser...\n' );
+		childProcess.exec ( './report/index.html' );
 	}
 }
 

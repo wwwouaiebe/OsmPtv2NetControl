@@ -76,9 +76,9 @@ class OsmData {
 }
 
 /**
-	 * Coming soon
-	 * @type {Object}
-	 */
+ * Coming soon
+ * @type {Object}
+ */
 
 let theOsmData = new OsmData ( );
 

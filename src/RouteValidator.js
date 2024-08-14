@@ -23,6 +23,7 @@ Changes:
 /* ------------------------------------------------------------------------------------------------------------------------- */
 
 import theOsmData from './OsmData.js';
+import theReport from './Report.js';
 
 /* ------------------------------------------------------------------------------------------------------------------------- */
 /**
@@ -65,16 +66,16 @@ class RouteValidator {
 					if (
 						previousWay.nodes [ 0 ] !== way.nodes [ 0 ]
                         &&
-                        previousWay.nodes [ 0 ] !== way.nodes.toReversed [ 0 ]
+                        previousWay.nodes [ 0 ] !== way.nodes.toReversed ( ) [ 0 ]
                         &&
-                        previousWay.nodes.toReversed [ 0 ] !== way.nodes [ 0 ]
+                        previousWay.nodes.toReversed ( ) [ 0 ] !== way.nodes [ 0 ]
                         &&
-                        previousWay.nodes.toReversed [ 0 ] !== way.nodes.toReversed [ 0 ]
+                        previousWay.nodes.toReversed ( ) [ 0 ] !== way.nodes.toReversed ( ) [ 0 ]
 					) {
-						console.error (
-							'Hole found for route ' + this.#route.id +
-                            ' between way id ' + previousWay.id +
-                            'and way id ' + way.id
+						theReport.addP (
+							'Hole found for route ' + theReport.getOsmLink ( this.#route ) +
+                            ' between way id ' + theReport.getOsmLink ( previousWay ) +
+                            ' and way id ' + theReport.getOsmLink ( way )
 						);
 						previousWay = null;
 					}
@@ -82,7 +83,6 @@ class RouteValidator {
 				previousWay = way;
 			}
 		);
-
 	}
 
 	/**
@@ -91,27 +91,27 @@ class RouteValidator {
 
 	#validateFromTo ( ) {
 		if ( ! this.#route?.tags?.from ) {
-			console.error (
-				'A from tag is not found for route ' + this.#route.id
+			theReport.addP (
+				'A from tag is not found for route ' + theReport.getOsmLink ( this.#route )
 			);
 		}
 		else if ( this.#route.tags.from !== this.#platforms[ 0 ].tags.name ) {
-			console.error (
+			theReport.addP (
 				'The from tag ( ' + this.#route?.tags?.from +
 				' ) is not equal to the name of the first platform ( ' +
-				this.#platforms[ 0 ].tags.name + ' ) for route ' + this.#route.id
+				this.#platforms[ 0 ].tags.name + ' ) for route ' + theReport.getOsmLink ( this.#route )
 			);
 		}
 		if ( ! this.#route?.tags?.to ) {
-			console.error (
-				'A to tag is not found for route ' + this.#route.id
+			theReport.addP (
+				'A to tag is not found for route ' + theReport.getOsmLink ( this.#route )
 			);
 		}
 		else if ( this.#route.tags.to !== this.#platforms.toReversed ( )[ 0 ].tags.name ) {
-			console.error (
+			theReport.addP (
 				'The to tag ( ' + this.#route.tags.to +
 				' ) is not equal to the name of the last platform ( ' +
-				this.#platforms.toReversed ( )[ 0 ].tags.name + ' ) for route ' + this.#route.id
+				this.#platforms.toReversed ( )[ 0 ].tags.name + ' ) for route ' + theReport.getOsmLink ( this.#route )
 			);
 		}
 	}
@@ -128,11 +128,10 @@ class RouteValidator {
 					emptyRole = true;
 				}
 				else if ( emptyRole && '' !== member.role ) {
-					console.error (
-						'An unordered object with a role (' + member.ref +
-                                ') is found in the ways of route ' + this.#route.id
+					theReport.addP (
+						'An unordered object with a role (' + theReport.getOsmLink ( member ) +
+                                ') is found in the ways of route ' + theReport.getOsmLink ( this.#route )
 					);
-
 				}
 			}
 		);
@@ -171,9 +170,9 @@ class RouteValidator {
 						let busStop = theOsmData.nodes.get ( member.ref );
 						this.#platforms.push ( busStop );
 						if ( 'bus_stop' !== busStop?.tags?.highway ) {
-							console.error (
-								'An invalid node (' + member.ref +
-                                    ') is used as platform for the route ' + this.#route.id
+							theReport.addP (
+								'An invalid node (' + theReport.getOsmLink ( member ) +
+                                    ') is used as platform for the route ' + theReport.getOsmLink ( this.#route )
 							);
 						}
 					}
@@ -181,9 +180,9 @@ class RouteValidator {
 						let platform = theOsmData.ways.get ( member.ref );
 						this.#platforms.push ( platform );
 						if ( 'platform' !== platform?.tags?.highway ) {
-							console.error (
-								'An invalid way (' + member.ref +
-                                    ') is used as platform for the route ' + this.#route.id
+							theReport.addP (
+								'An invalid way (' + theReport.getOsmLink ( member ) +
+                                    ') is used as platform for the route ' + theReport.getOsmLink ( this.#route )
 							);
 						}
 					}
@@ -192,16 +191,16 @@ class RouteValidator {
 					if ( 'node' === member.type ) {
 						let stopPosition = theOsmData.nodes.get ( member.ref );
 						if ( 'stop_position' !== stopPosition?.tags?.public_transport ) {
-							console.error (
-								'An invalid node (' + member.ref +
-                                    ') is used as stop_position for the route ' + this.#route.id
+							theReport.addP (
+								'An invalid node (' + theReport.getOsmLink ( member ) +
+                                    ') is used as stop_position for the route ' + theReport.getOsmLink ( this.#route )
 							);
 						}
 					}
 					else {
-						console.error (
-							'An invalid object (' + member.ref +
-								') is used as stop_position for the route ' + this.#route.id
+						theReport.addP (
+							'An invalid object (' + theReport.getOsmLink ( member ) +
+								') is used as stop_position for the route ' + theReport.getOsmLink ( this.#route )
 						);
 					}
 					break;
@@ -210,9 +209,9 @@ class RouteValidator {
 						let way = theOsmData.ways.get ( member.ref );
 						if ( -1 === validBusHighways.indexOf ( way?.tags?.highway )
 						) {
-							console.error (
-								'An invalid highway (' + member.ref +
-                                    ') is used as way for the route ' + this.#route.id
+							theReport.addP (
+								'An invalid highway (' + theReport.getOsmLink ( member ) +
+                                    ') is used as way for the route ' + theReport.getOsmLink ( this.#route )
 							);
 
 						}
@@ -221,17 +220,17 @@ class RouteValidator {
 						}
 					}
 					else {
-						console.error (
-							'An invalid object (' + member.ref +
-                                ') is used as way for the route ' + this.#route.id
+						theReport.addP (
+							'An invalid object (' + theReport.getOsmLink ( member ) +
+                                ') is used as way for the route ' + theReport.getOsmLink ( this.#route )
 						);
 					}
 					break;
 				default :
-					console.error (
+					theReport.addP (
 						'An unknow role (' + member.role +
-                            ') is found in the route ' + this.#route.id +
-                            ' for the osm object ' + member.ref
+                            ') is found in the route ' + theReport.getOsmLink ( this.#route ) +
+                            ' for the osm object ' + theReport.getOsmLink ( member )
 					);
 					break;
 				}
@@ -246,8 +245,9 @@ class RouteValidator {
 
 	validateRoute ( route ) {
 		this.#route = route;
-		console.error (
-			'\nNow validating route ' + ( this.#route.tags.name ?? '' ) + ' ( id : ' + this.#route.id + ' )'
+		theReport.addH2 (
+			'\nNow validating route ' + ( this.#route.tags.name ?? '' ) +
+			' ( ' + theReport.getOsmLink ( this.#route ) + ' )'
 		);
 
 		this.#platforms = [];

@@ -66,6 +66,7 @@ class Config {
 		this.osmType = '';
 		this.osmArea = 0;
 		this.osmRelation = 0;
+		this.appDir = '';
 	}
 
 }
