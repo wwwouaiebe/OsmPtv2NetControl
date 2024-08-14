@@ -26,6 +26,7 @@
         "debug": "node node_modules/grunt/bin/grunt",
         "loadDataProposed": "node ./src/index.js --osmType=proposed --osmArea=3601407192",
         "loadDataAnthisnes": "node ./src/index.js --osmType=used --osmArea=3602377747",
+        "loadDataLiègeCity": "node ./src/index.js --osmType=used --osmArea=3601681788",
         "loadDataRelation": "node ./src/index.js --osmType=used --osmRelation=534703"
     },
     "author": "wwwouaiebe",

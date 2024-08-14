@@ -89,11 +89,16 @@ class Report {
 	/**
 	* Coming soon
 	* @param {String} text Coming soon
+	* @param {Number} osmId Coming soon
 	 */
 
-	addP ( text ) {
+	addP ( text, osmId ) {
 		console.error ( text );
-		this.#report += '       <p>' + text + '</p>\n';
+		let josmEdit = '( <a class ="josmedit" target="_blank" ' +
+		'href="http://localhost:8111/load_object?new_layer=true&relation_members=true&objects=r' +
+		osmId + '">Edit with JOSM</a> )';
+
+		this.#report += '       <p>' + text + josmEdit + '</p>\n';
 	}
 
 	/**

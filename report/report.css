@@ -40,3 +40,7 @@ p {
     color: red;
 }
 
+a.josmedit:visited {
+	color : gray;
+}
+
