@@ -28,6 +28,14 @@ A to tag is missing . Add the tag to the bus route
 
 The to tag must be equal to the name of the last platform. Correct the to tag
 
+## Invalid name for route ... Ok
+
+The name of a route must be 'Bus ' + the ref tag of the route + ': ' + the from tag of the route + ' → ' + the to tag of the route
+
+## Missing from, to, ref or name tags for route
+
+A tag name, from to or ref is missing
+
 ## An unordered object with a role ... is found in the ways of route ... Ok
 
 Reorder the objects in the bus route. 

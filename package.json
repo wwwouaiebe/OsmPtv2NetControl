@@ -25,8 +25,9 @@
     "scripts": {
         "debug": "node node_modules/grunt/bin/grunt",
         "loadDataProposed": "node ./src/index.js --osmType=proposed --osmArea=3601407192",
-        "loadDataAnthisnes": "node ./src/index.js --osmType=used --osmArea=3602377747",
+        "loadDataEupen": "node ./src/index.js --osmType=used --osmArea=3602400207",
         "loadDataLiègeCity": "node ./src/index.js --osmType=used --osmArea=3601681788",
+        "loadDataLiègeProvince": "node ./src/index.js --osmType=used --osmArea=3601407192",
         "loadDataRelation": "node ./src/index.js --osmType=used --osmRelation=2361866"
     },
     "author": "wwwouaiebe",

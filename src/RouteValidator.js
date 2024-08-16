@@ -107,7 +107,7 @@ class RouteValidator {
 						&&
 						! this.#waysViaRoundabout ( way, previousWay )
 					) {
-						theReport.addP (
+						theReport.addPError (
 							'Hole found for route ' + theReport.getOsmLink ( this.#route ) +
                             ' between way id ' + theReport.getOsmLink ( previousWay ) +
                             ' and way id ' + theReport.getOsmLink ( way ),
@@ -127,13 +127,13 @@ class RouteValidator {
 
 	#validateFrom ( ) {
 		if ( ! this.#route?.tags?.from ) {
-			theReport.addP (
+			theReport.addPError (
 				'A from tag is not found for route ' + theReport.getOsmLink ( this.#route ),
 				this.#route.id
 			);
 		}
 		else if ( this.#route?.tags?.from !== this.#platforms[ 0 ]?.tags?.name ) {
-			theReport.addP (
+			theReport.addPError (
 				'The from tag ( ' + this.#route?.tags?.from +
 				' ) is not equal to the name of the first platform ( ' +
 				this.#platforms[ 0 ]?.tags?.name + ' ) for route ' + theReport.getOsmLink ( this.#route ),
@@ -148,13 +148,13 @@ class RouteValidator {
 
 	#validateTo ( )	{
 		if ( ! this.#route?.tags?.to ) {
-			theReport.addP (
+			theReport.addPError (
 				'A to tag is not found for route ' + theReport.getOsmLink ( this.#route ),
 				this.#route.id
 			);
 		}
 		else if ( this.#route?.tags?.to !== this.#platforms.toReversed ( )[ 0 ]?.tags?.name ) {
-			theReport.addP (
+			theReport.addPError (
 				'The to tag ( ' + this.#route?.tags?.to +
 				' ) is not equal to the name of the last platform ( ' +
 				this.#platforms.toReversed ( )[ 0 ]?.tags?.name + ' ) for route ' + theReport.getOsmLink ( this.#route ),
@@ -179,14 +179,14 @@ class RouteValidator {
 		if ( this.#haveTagsNameFromToRef ( ) ) {
 			let goodName = 'Bus ' + this.#route?.tags?.ref + ': ' + this.#route?.tags?.from + ' → ' + this.#route?.tags?.to;
 			if ( this.#route?.tags?.name !== goodName ) {
-				theReport.addP (
+				theReport.addPError (
 					'Invalid name for route ' + theReport.getOsmLink ( this.#route ),
 					this.#route.id
 				);
 			}
 		}
 		else {
-			theReport.addP (
+			theReport.addPError (
 				'Missing from, to, ref or name tags for route ' + theReport.getOsmLink ( this.#route ),
 				this.#route.id
 			);
@@ -205,7 +205,7 @@ class RouteValidator {
 					emptyRole = true;
 				}
 				else if ( emptyRole && '' !== member.role ) {
-					theReport.addP (
+					theReport.addPError (
 						'An unordered object with a role (' + theReport.getOsmLink ( member ) +
                                 ') is found in the ways of route ' + theReport.getOsmLink ( this.#route ),
 						this.#route.id
@@ -225,7 +225,7 @@ class RouteValidator {
 			let busStop = theOsmData.nodes.get ( member.ref );
 			this.#platforms.push ( busStop );
 			if ( 'bus_stop' !== busStop?.tags?.highway ) {
-				theReport.addP (
+				theReport.addPError (
 					'An invalid node (' + theReport.getOsmLink ( member ) +
 						') is used as platform for the route ' + theReport.getOsmLink ( this.#route ),
 					this.#route.id
@@ -236,7 +236,7 @@ class RouteValidator {
 			let platform = theOsmData.ways.get ( member.ref );
 			this.#platforms.push ( platform );
 			if ( 'platform' !== platform?.tags?.highway ) {
-				theReport.addP (
+				theReport.addPError (
 					'An invalid way (' + theReport.getOsmLink ( member ) +
 						') is used as platform for the route ' + theReport.getOsmLink ( this.#route ),
 					this.#route.id
@@ -254,7 +254,7 @@ class RouteValidator {
 		if ( 'node' === member.type ) {
 			let stopPosition = theOsmData.nodes.get ( member.ref );
 			if ( 'stop_position' !== stopPosition?.tags?.public_transport ) {
-				theReport.addP (
+				theReport.addPError (
 					'An invalid node (' + theReport.getOsmLink ( member ) +
 						') is used as stop_position for the route ' + theReport.getOsmLink ( this.#route ),
 					this.#route.id
@@ -262,7 +262,7 @@ class RouteValidator {
 			}
 		}
 		else {
-			theReport.addP (
+			theReport.addPError (
 				'An invalid object (' + theReport.getOsmLink ( member ) +
 					') is used as stop_position for the route ' + theReport.getOsmLink ( this.#route ),
 				this.#route.id
@@ -297,7 +297,7 @@ class RouteValidator {
 			let way = theOsmData.ways.get ( member.ref );
 			if ( -1 === validBusHighways.indexOf ( way?.tags?.highway )
 			) {
-				theReport.addP (
+				theReport.addPError (
 					'An invalid highway (' + theReport.getOsmLink ( member ) +
 						') is used as way for the route ' + theReport.getOsmLink ( this.#route ),
 					this.#route.id
@@ -309,7 +309,7 @@ class RouteValidator {
 			}
 		}
 		else {
-			theReport.addP (
+			theReport.addPError (
 				'An invalid object (' + theReport.getOsmLink ( member ) +
 					') is used as way for the route ' + theReport.getOsmLink ( this.#route ),
 				this.#route.id
@@ -337,7 +337,7 @@ class RouteValidator {
 					this.#validateWayRole ( member );
 					break;
 				default :
-					theReport.addP (
+					theReport.addPError (
 						'An unknow role (' + member.role +
                             ') is found in the route ' + theReport.getOsmLink ( this.#route ) +
                             ' for the osm object ' + theReport.getOsmLink ( member ),

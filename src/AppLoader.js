@@ -27,7 +27,7 @@ import theConfig from './Config.js';
 import OsmDataLoader from './OsmDataLoader.js';
 import OsmDataValidator from './OsmDataValidator.js';
 import theReport from './Report.js';
-import childProcess from 'child_process';
+import MissingRouteMasterValidator from './MissingRouteMasterValidator.js';
 
 /* ------------------------------------------------------------------------------------------------------------------------- */
 /**
@@ -123,11 +123,11 @@ class AppLoader {
 			( 0 === theConfig.osmArea ? '' : '- area : ' + theConfig.osmArea ) +
 			( 0 === theConfig.osmRelation ? '' : 'relation : ' + theConfig.osmRelation )
 		);
+		await new MissingRouteMasterValidator ( ).fetchData ( );
 		await new OsmDataLoader ( ).fetchData ( );
 		new OsmDataValidator ( ).validate ( );
 		theReport.close ( );
-		console.error ( '\n\t... launching in the browser...\n' );
-		childProcess.exec ( './report/index.html' );
+		console.error ( '\n' + theReport.errorCounter + ' errors  found' );
 	}
 }
 

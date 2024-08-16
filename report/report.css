@@ -37,6 +37,8 @@ h2 {
 
 p {
     margin-left : 4em;
+}
+P.error {
     color: red;
 }
 

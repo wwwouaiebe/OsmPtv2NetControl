@@ -39,6 +39,20 @@ class Report {
 
 	#report = '';
 
+	/**
+	* Coming soon
+	* @type {Number}
+	 */
+
+	#errorCounter = 0;
+
+	/**
+	* Coming soon
+	@type {Number}
+	 */
+
+	get errorCounter ( ) { return this.#errorCounter; }
+
    	/**
 	* Coming soon
 	 */
@@ -89,16 +103,26 @@ class Report {
 	/**
 	* Coming soon
 	* @param {String} text Coming soon
+	 */
+
+	addP ( text ) {
+		this.#report += '       <p>' + text + '</p>\n';
+	}
+
+	/**
+	* Coming soon
+	* @param {String} text Coming soon
 	* @param {Number} osmId Coming soon
 	 */
 
-	addP ( text, osmId ) {
+	addPError ( text, osmId ) {
 		console.error ( text );
-		let josmEdit = '( <a class ="josmedit" target="_blank" ' +
+		let josmEdit = ' ( <a class ="josmedit" target="_blank" ' +
 		'href="http://localhost:8111/load_object?new_layer=true&relation_members=true&objects=r' +
 		osmId + '">Edit with JOSM</a> )';
 
-		this.#report += '       <p>' + text + josmEdit + '</p>\n';
+		this.#report += '       <p class="error">' + text + josmEdit + '</p>\n';
+		this.#errorCounter ++;
 	}
 
 	/**
@@ -155,6 +179,7 @@ class Report {
 
 	constructor ( ) {
 		Object.freeze ( this );
+		this.#errorCounter = 0;
 	}
 }
 

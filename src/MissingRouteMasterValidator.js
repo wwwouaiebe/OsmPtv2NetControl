@@ -22,9 +22,8 @@ Changes:
 */
 /* ------------------------------------------------------------------------------------------------------------------------- */
 
-import theOsmData from './OsmData.js';
 import theReport from './Report.js';
-import theRouteValidator from './RouteValidator.js';
+import theConfig from './Config.js';
 
 /* ------------------------------------------------------------------------------------------------------------------------- */
 /**
@@ -32,41 +31,24 @@ import theRouteValidator from './RouteValidator.js';
  */
 /* ------------------------------------------------------------------------------------------------------------------------- */
 
-class OsmDataValidator {
+class MissingRouteMasterValidator {
 
 	/**
 	* Coming soon
-	* @param {?Object} routeMaster Coming soon
+	 @param {Array} elements Coming soon
 	 */
 
-	validateRouteMaster ( routeMaster ) {
-		theReport.addH1 (
-			'Now validating route_master ' +
-            ( routeMaster.tags.name ?? '' ) + ' ' +
-            ( routeMaster.tags.description ?? '' ) +
-            ' ( ' + theReport.getOsmLink ( routeMaster ) + ' )'
-		);
-
-		routeMaster.members.forEach (
-			member => {
-				if ( 'relation' === member.type ) {
-					let route = theOsmData.routes.get ( member.ref );
-					if ( route ) {
-						theRouteValidator.validateRoute ( route );
-					}
-					else {
-						theReport.addPError ( 'A member of the route master is not a bus relation' );
-					}
-
-				}
-				else {
-					theReport.addPError (
-						'A member of the route master is not a relation (' +
-                        member.type + ' ' + member.ref + ' )'
-					);
-				}
+	 #reportMissingRouteMaster ( elements ) {
+		if ( elements ) {
+			theReport.addH1 ( 'Routes without route_master' );
+		}
+		elements.forEach (
+			element => {
+				theReport.addPError (
+					'Route wihout route_master ' + theReport.getOsmLink ( element ),
+					element.id
+				);
 			}
-
 		);
 	}
 
@@ -74,11 +56,39 @@ class OsmDataValidator {
 	* Coming soon
 	 */
 
-	validate ( ) {
-		theOsmData.routeMasters.forEach (
-			routeMaster => this.validateRouteMaster ( routeMaster )
-		);
+	 async fetchData ( ) {
 
+		if ( 0 !== theConfig.osmRelation ) {
+			return;
+		}
+
+		let uri =
+			'https://lz4.overpass-api.de/api/interpreter?data=[out:json][timeout:40];' +
+			'relation(area:' + theConfig.osmArea + ')[network=TECL][operator=TEC]' +
+			'[type="' + theConfig.osmType + '"]->.all;rel[route_master=bus](br.all);' +
+            'rel[route=bus](r)->.b;(.all; - .b; );out;';
+
+		await fetch ( uri )
+			.then (
+				response => {
+					if ( response.ok ) {
+						return response.json ( );
+					}
+					console.error ( String ( response.status ) + ' ' + response.statusText );
+					process.exit ( 1 );
+				}
+			)
+			.then (
+				async jsonResponse => {
+					await this.#reportMissingRouteMaster ( jsonResponse.elements );
+				}
+			)
+			.catch (
+				err => {
+					console.error ( err );
+					process.exit ( 1 );
+				}
+			);
 	}
 
 	/**
@@ -90,6 +100,6 @@ class OsmDataValidator {
 	}
 }
 
-export default OsmDataValidator;
+export default MissingRouteMasterValidator;
 
 /* --- End of file --------------------------------------------------------------------------------------------------------- */
