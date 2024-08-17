@@ -53,11 +53,17 @@ class OsmDataValidator {
 					let route = theOsmData.routes.get ( member.ref );
 					if ( route ) {
 						theRouteValidator.validateRoute ( route );
+						if ( routeMaster.tags.ref !== route.tags.ref ) {
+							theReport.addPError (
+								'ref tag of the route master (' + routeMaster.tags.ref +
+								') is not the same than the ref tag of the route (' + route.tags.ref + ')',
+								routeMaster.id
+							);
+						}
 					}
 					else {
 						theReport.addPError ( 'A member of the route master is not a bus relation' );
 					}
-
 				}
 				else {
 					theReport.addPError (
@@ -75,10 +81,41 @@ class OsmDataValidator {
 	 */
 
 	validate ( ) {
+
+		let routeMasterArray = [];
+		let routeMasterWithoutRef = false;
 		theOsmData.routeMasters.forEach (
-			routeMaster => this.validateRouteMaster ( routeMaster )
+			routeMaster => {
+				routeMasterArray.push ( routeMaster );
+				if ( ! routeMaster?.tags?.ref ) {
+					theReport.addPError (
+						'Route_master without ref tag ', routeMaster.id
+					);
+					routeMasterWithoutRef = true;
+				}
+
+				if ( routeMaster.tags.name !== 'Bus ' + routeMaster.tags.ref ) {
+					theReport.addPError (
+						'Bad name for route_master (must be Bus ' + routeMaster.tags.ref + ')'
+						, routeMaster.id
+					);
+				}
+			}
 		);
 
+		routeMasterArray.sort (
+			( first, second ) => {
+				let result = String ( first.tags.ref ).padStart ( 5, ' ' )
+					.localeCompare ( String ( second.tags.ref ).padStart ( 5, ' ' ) );
+				return result;
+			}
+		);
+		if ( routeMasterWithoutRef ) {
+			return;
+		}
+		routeMasterArray.forEach (
+			routeMaster => this.validateRouteMaster ( routeMaster )
+		);
 	}
 
 	/**

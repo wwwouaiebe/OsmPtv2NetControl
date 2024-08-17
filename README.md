@@ -67,3 +67,7 @@ A node or a relation is used as way for the bus route. Verify the role of the ob
 ## An unknow role ... is found in the route ... for the osm object ... Ok
 
 The role is not a valid role for a bus relation. Verify the role or remove the object.
+
+## ref tag of the route master (...) is not the same than the ref tag of the route (...)
+
+Verify the ref tag of the route and of the route master
