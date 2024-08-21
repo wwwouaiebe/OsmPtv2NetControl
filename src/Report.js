@@ -23,6 +23,7 @@ Changes:
 /* ------------------------------------------------------------------------------------------------------------------------- */
 
 import theConfig from './Config.js';
+import theOsmData from './OsmData.js';
 
 /* ------------------------------------------------------------------------------------------------------------------------- */
 /**
@@ -112,7 +113,9 @@ class Report {
 		}
 		else {
 			document.getElementById ( 'waitAnimation' ).style.visibility = 'hidden';
-			this.#report.firstChild.textContent = String ( this.#errorCounter ) + ' errors found';
+			this.#report.firstChild.textContent = String ( this.#errorCounter ) + ' errors found - ' +
+			String ( theOsmData.routeMasters.size ) + ' route_master and ' +
+			String ( theOsmData.routes.size ) + ' routes controlled';
 		}
 
 	}
