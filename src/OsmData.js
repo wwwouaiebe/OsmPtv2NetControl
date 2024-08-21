@@ -73,6 +73,13 @@ class OsmData {
 		Object.freeze ( this );
 	}
 
+	clear ( ) {
+		this.nodes.clear ( );
+		this.platforms.clear ( );
+		this.routeMasters.clear ( );
+		this.routes.clear ( );
+		this.ways.clear ( );
+	}
 }
 
 /**

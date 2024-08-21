@@ -28,6 +28,7 @@ import OsmDataLoader from './OsmDataLoader.js';
 import OsmDataValidator from './OsmDataValidator.js';
 import theReport from './Report.js';
 import MissingRouteMasterValidator from './MissingRouteMasterValidator.js';
+import theOsmData from './OsmData.js';
 
 /* ------------------------------------------------------------------------------------------------------------------------- */
 /**
@@ -125,13 +126,8 @@ class AppLoader {
 
 	async loadApp ( options ) {
 
-		if ( ! options ) {
-			await import ( 'process' );
-			await import ( 'fs' );
-		}
-
 		this.#createConfig ( options );
-
+		theOsmData.clear ( );
 		theReport.open ( );
 
 		if ( 'nodejs' === theConfig.engine ) {

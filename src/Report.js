@@ -58,6 +58,7 @@ class Report {
 	 */
 
 	open ( ) {
+		this.#errorCounter = 0;
 		if ( 'browser' === theConfig.engine ) {
 			this.#report = document.getElementById ( 'report' );
 			while ( this.#report.firstChild ) {
@@ -144,11 +145,12 @@ class Report {
 	addPError ( text, osmId ) {
 
 		let josmEdit = ' ( <a class ="josmedit" target="_blank" ' +
-		'href="http://localhost:8111/load_object?new_layer=true&relation_members=true&objects=r' +
-		osmId + '">Edit with JOSM</a> )';
+		'href="http://localhost:8111/load_object?new_layer=true&relation_members=true&objects=r' + osmId + 
+		'">Edit with JOSM</a> )';
 
 		if ( 'browser' === theConfig.engine ) {
 			let htmlElement = document.createElement ( 'p' );
+			htmlElement.classList.add ( 'error' );
 			htmlElement.innerHTML = text + josmEdit;
 			this.#report.appendChild ( htmlElement );
 		}

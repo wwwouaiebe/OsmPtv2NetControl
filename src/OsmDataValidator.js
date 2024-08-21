@@ -25,6 +25,7 @@ Changes:
 import theOsmData from './OsmData.js';
 import theReport from './Report.js';
 import theRouteValidator from './RouteValidator.js';
+import theConfig from './Config.js';
 
 /* ------------------------------------------------------------------------------------------------------------------------- */
 /**
@@ -85,6 +86,8 @@ class OsmDataValidator {
 
 		let routeMasterArray = [];
 		let routeMasterWithoutRef = false;
+		let vehicle = theConfig.osmVehicle.substring ( 0, 1 ).toUpperCase ( ) +
+			theConfig.osmVehicle.substring ( 1 ) + ' ';
 		theOsmData.routeMasters.forEach (
 			routeMaster => {
 				routeMasterArray.push ( routeMaster );
@@ -95,7 +98,7 @@ class OsmDataValidator {
 					routeMasterWithoutRef = true;
 				}
 
-				if ( routeMaster.tags.name !== 'Bus ' + routeMaster.tags.ref ) {
+				if ( routeMaster.tags.name !== vehicle + routeMaster.tags.ref ) {
 					theReport.addPError (
 						'Bad name for route_master (must be Bus ' + routeMaster.tags.ref + ')'
 						, routeMaster.id

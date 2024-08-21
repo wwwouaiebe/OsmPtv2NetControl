@@ -22,6 +22,7 @@ Changes:
 */
 /* ------------------------------------------------------------------------------------------------------------------------- */
 
+import theConfig from './Config.js';
 import theOsmData from './OsmData.js';
 import theReport from './Report.js';
 
@@ -176,11 +177,14 @@ class RouteValidator {
 	 */
 
 	#validateName ( ) {
+		let vehicle = theConfig.osmVehicle.substring ( 0, 1 ).toUpperCase ( ) +
+			theConfig.osmVehicle.substring ( 1 ) + ' ';
 		if ( this.#haveTagsNameFromToRef ( ) ) {
-			let goodName = 'Bus ' + this.#route?.tags?.ref + ': ' + this.#route?.tags?.from + ' → ' + this.#route?.tags?.to;
+			let goodName = vehicle + this.#route?.tags?.ref + ': ' + this.#route?.tags?.from + ' → ' + this.#route?.tags?.to;
 			if ( this.#route?.tags?.name !== goodName ) {
 				theReport.addPError (
-					'Invalid name for route ' + theReport.getOsmLink ( this.#route ),
+					'Invalid name (' + this.#route?.tags?.name + ' <> ' + goodName + ') for route ' +
+					theReport.getOsmLink ( this.#route ),
 					this.#route.id
 				);
 			}
@@ -235,7 +239,11 @@ class RouteValidator {
 		if ( 'way' === member.type ) {
 			let platform = theOsmData.ways.get ( member.ref );
 			this.#platforms.push ( platform );
-			if ( 'platform' !== platform?.tags?.highway ) {
+			if (
+				( 'platform' !== platform?.tags?.highway  && 'bus' ===theConfig.osmVehicle )
+				||
+				( 'platform' !== platform?.tags?.railway  && 'tram' ===theConfig.osmVehicle )
+			) {
 				theReport.addPError (
 					'An invalid way (' + theReport.getOsmLink ( member ) +
 						') is used as platform for the route ' + theReport.getOsmLink ( this.#route ),
@@ -276,7 +284,8 @@ class RouteValidator {
 	 */
 
 	#validateWayRole ( member ) {
-		const validBusHighways = [
+		const validBusHighways =
+		[
 			'motorway',
 			'motorway_link',
 			'trunk',
@@ -293,19 +302,32 @@ class RouteValidator {
 			'living_street',
 			'busway'
 		];
-		if ( 'way' === member.type ) {
-			let way = theOsmData.ways.get ( member.ref );
-			if ( -1 === validBusHighways.indexOf ( way?.tags?.highway )
+		let way = theOsmData.ways.get ( member.ref );
+		if ( 'way' === member.type && 'bus' === theConfig.osmVehicle ) {
+			if (
+				 -1 === validBusHighways.indexOf ( way?.tags?.highway )
+				 &&
+				 'yes' !== way?.tags?.psv
+				 &&
+				 'yes' !== way?.tags [ theConfig.osmVehicle ]
 			) {
 				theReport.addPError (
 					'An invalid highway (' + theReport.getOsmLink ( member ) +
 						') is used as way for the route ' + theReport.getOsmLink ( this.#route ),
 					this.#route.id
 				);
-
 			}
 			else {
 				this.#ways.push ( way );
+			}
+		}
+		else if ( 'way' === member.type && 'tram' === theConfig.osmVehicle ) {
+			if ( 'tram' !== way?.tags?.railway ) {
+				theReport.addPError (
+					'An invalid railway (' + theReport.getOsmLink ( member ) +
+						') is used as way for the route ' + theReport.getOsmLink ( this.#route ),
+					this.#route.id
+				);
 			}
 		}
 		else {
