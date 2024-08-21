@@ -65,6 +65,7 @@ class Report {
 				this.#report.removeChild ( this.#report.firstChild );
 			}
 			document.getElementById ( 'waitAnimation' ).style.visibility = 'visible';
+			this.add ( 'h1', '??? errors found' );
 		}
 		else {
 			this.#report =
@@ -104,7 +105,6 @@ class Report {
 	async close ( ) {
 
 		if ( 'nodejs' === theConfig.engine ) {
-			await import ( 'fs' );
 			this.#report +=
 				'	</body>\n' +
 				'</html>';
@@ -112,6 +112,7 @@ class Report {
 		}
 		else {
 			document.getElementById ( 'waitAnimation' ).style.visibility = 'hidden';
+			this.#report.firstChild.textContent = String ( this.#errorCounter ) + ' errors found';
 		}
 
 	}
