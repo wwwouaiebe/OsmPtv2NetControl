@@ -40,7 +40,7 @@ class MissingRouteMasterValidator {
 
 	 #reportMissingRouteMaster ( elements ) {
 		if ( elements ) {
-			theReport.addH1 ( 'Routes without route_master' );
+			theReport.add ( 'h1', 'Routes without route_master' );
 		}
 		elements.forEach (
 			element => {
@@ -62,11 +62,17 @@ class MissingRouteMasterValidator {
 			return;
 		}
 
+		let uriArea = 0 === theConfig.osmArea ? 'rel' : 'relation(area:' + theConfig.osmArea + ')';
+
 		let uri =
 			'https://lz4.overpass-api.de/api/interpreter?data=[out:json][timeout:40];' +
-			'relation(area:' + theConfig.osmArea + ')[network=TECL][operator=TEC]' +
-			'[type="' + theConfig.osmType + '"]->.all;rel[route_master=bus](br.all);' +
-            'rel[route=bus](r)->.b;(.all; - .b; );out;';
+			uriArea +
+			'["network"="' + theConfig.osmNetwork + '"]' +
+			'["type"="' + theConfig.osmType + '"]' +
+			'->.all;' +
+			'rel["' + theConfig.osmType + '_master"="' + theConfig.osmVehicle + '"]' +
+			'(br.all);rel["' + theConfig.osmType + '"="' + theConfig.osmVehicle + '"]' +
+			'(r)->.b;(.all; - .b; );out;';
 
 		await fetch ( uri )
 			.then (
@@ -75,7 +81,8 @@ class MissingRouteMasterValidator {
 						return response.json ( );
 					}
 					console.error ( String ( response.status ) + ' ' + response.statusText );
-					process.exit ( 1 );
+
+					// process.exit ( 1 );
 				}
 			)
 			.then (
@@ -86,7 +93,8 @@ class MissingRouteMasterValidator {
 			.catch (
 				err => {
 					console.error ( err );
-					process.exit ( 1 );
+
+					// process.exit ( 1 );
 				}
 			);
 	}

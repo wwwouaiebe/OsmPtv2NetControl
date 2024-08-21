@@ -59,14 +59,38 @@ class Config {
 	osmRelation;
 
 	/**
+	 * Coming soon
+	 * @type {string}
+	 */
+
+	osmNetwork;
+
+	/**
+	 * Coming soon
+	 * @type {string}
+	 */
+
+	osmVehicle;
+
+	/**
+	 * Coming soon
+	 * @type {string}
+	 */
+
+	engine;
+
+	/**
 	 * The constructor
 	 */
 
 	constructor ( ) {
-		this.osmType = '';
+		this.osmType = 'route';
 		this.osmArea = 0;
 		this.osmRelation = 0;
+		this.osmNetwork = 'TECL';
+		this.osmVehicle = 'bus';
 		this.appDir = '';
+		this.engine = '';
 	}
 
 }

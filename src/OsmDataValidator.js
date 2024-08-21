@@ -40,7 +40,8 @@ class OsmDataValidator {
 	 */
 
 	validateRouteMaster ( routeMaster ) {
-		theReport.addH1 (
+		theReport.add (
+			'h1',
 			'Now validating route_master ' +
             ( routeMaster.tags.name ?? '' ) + ' ' +
             ( routeMaster.tags.description ?? '' ) +

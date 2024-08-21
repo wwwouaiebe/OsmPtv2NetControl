@@ -22,7 +22,7 @@ Changes:
 */
 /* ------------------------------------------------------------------------------------------------------------------------- */
 
-import fs from 'fs';
+import theConfig from './Config.js';
 
 /* ------------------------------------------------------------------------------------------------------------------------- */
 /**
@@ -58,55 +58,81 @@ class Report {
 	 */
 
 	open ( ) {
-		this.#report =
-        '<!DOCTYPE html>\n' +
-        '<!--\n' +
-        '/*\n' +
-        'This  program is free software;\n' +
-        'you can redistribute it and/or modify it under the terms of the\n' +
-        'GNU General Public License as published by the Free Software Foundation;\n' +
-        'either version 3 of the License, or any later version.\n' +
-        '\n' +
-        'This program is distributed in the hope that it will be useful,\n' +
-        'but WITHOUT ANY WARRANTY; without even the implied warranty of\n' +
-        'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n' +
-        'GNU General Public License for more details.\n' +
-        '\n' +
-        'You should have received a copy of the GNU General Public License\n' +
-        'along with this program; if not, write to the Free Software\n' +
-        'Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA\n' +
-        '*/\n' +
-        '-->\n' +
-        '<html>\n' +
-        '	<head>\n' +
-        '		<meta charset="UTF-8" />\n' +
-        '		<meta name="viewport" content="width=device-width, initial-scale=1.0" />\n' +
-        '		<title>wwwouaiebe - osm bus relations report</title>\n' +
-        '		<link rel="stylesheet" href="report.css" />\n' +
-        '	</head>\n' +
-        '	<body>\n';
+		if ( 'browser' === theConfig.engine ) {
+			this.#report = document.getElementById ( 'report' );
+			while ( this.#report.firstChild ) {
+				this.#report.removeChild ( this.#report.firstChild );
+			}
+			document.getElementById ( 'waitAnimation' ).style.visibility = 'visible';
+		}
+		else {
+			this.#report =
+				'<!DOCTYPE html>\n' +
+				'<!--\n' +
+				'/*\n' +
+				'This  program is free software;\n' +
+				'you can redistribute it and/or modify it under the terms of the\n' +
+				'GNU General Public License as published by the Free Software Foundation;\n' +
+				'either version 3 of the License, or any later version.\n' +
+				'\n' +
+				'This program is distributed in the hope that it will be useful,\n' +
+				'but WITHOUT ANY WARRANTY; without even the implied warranty of\n' +
+				'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n' +
+				'GNU General Public License for more details.\n' +
+				'\n' +
+				'You should have received a copy of the GNU General Public License\n' +
+				'along with this program; if not, write to the Free Software\n' +
+				'Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA\n' +
+				'*/\n' +
+				'-->\n' +
+				'<html>\n' +
+				'	<head>\n' +
+				'		<meta charset="UTF-8" />\n' +
+				'		<meta name="viewport" content="width=device-width, initial-scale=1.0" />\n' +
+				'		<title>wwwouaiebe - osm bus relations report</title>\n' +
+				'		<link rel="stylesheet" href="report.css" />\n' +
+				'	</head>\n' +
+				'	<body>\n';
+		}
 	}
 
   	/**
 	* Coming soon
 	 */
 
-	close ( ) {
-		this.#report +=
-        '	</body>\n' +
-		'</html>';
+	async close ( ) {
 
-		fs.writeFileSync ( './report/index.html', this.#report );
+		if ( 'nodejs' === theConfig.engine ) {
+			await import ( 'fs' );
+			this.#report +=
+				'	</body>\n' +
+				'</html>';
+			( await import ( 'fs' ) ).writeFileSync ( './report/index.html', this.#report );
+		}
+		else {
+			document.getElementById ( 'waitAnimation' ).style.visibility = 'hidden';
+		}
 
 	}
 
-	/**
+  	/**
 	* Coming soon
+	* @param {String} htmlTag Coming soon
 	* @param {String} text Coming soon
+	* @param {Object} osmObject Coming soon
 	 */
 
-	addP ( text ) {
-		this.#report += '       <p>' + text + '</p>\n';
+	add ( htmlTag, text, osmObject ) {
+
+		let osmLink = osmObject ? '(' + this.getOsmLink ( osmObject ) + ')' : '';
+		if ( 'browser' === theConfig.engine ) {
+			let htmlElement = document.createElement ( htmlTag );
+			htmlElement.innerHTML = text + osmLink;
+			this.#report.appendChild ( htmlElement );
+		}
+		else {
+			this.#report += '<' + htmlTag + '>' + text + osmLink + '</ ' + htmlTag + '>\n';
+		}
 	}
 
 	/**
@@ -116,33 +142,21 @@ class Report {
 	 */
 
 	addPError ( text, osmId ) {
-		console.error ( text );
+
 		let josmEdit = ' ( <a class ="josmedit" target="_blank" ' +
 		'href="http://localhost:8111/load_object?new_layer=true&relation_members=true&objects=r' +
 		osmId + '">Edit with JOSM</a> )';
 
-		this.#report += '       <p class="error">' + text + josmEdit + '</p>\n';
+		if ( 'browser' === theConfig.engine ) {
+			let htmlElement = document.createElement ( 'p' );
+			htmlElement.innerHTML = text + josmEdit;
+			this.#report.appendChild ( htmlElement );
+		}
+		else {
+			this.#report += '       <p class="error">' + text + josmEdit + '</p>\n';
+		}
+
 		this.#errorCounter ++;
-	}
-
-	/**
-	* Coming soon
-	* @param {String} text Coming soon
-	 */
-
-	addH1 ( text ) {
-		console.error ( text );
-		this.#report += '       <h1>' + text + '</h1>\n';
-	}
-
-	/**
-	* Coming soon
-	* @param {String} text Coming soon
-	 */
-
-	addH2 ( text ) {
-		console.error ( text );
-		this.#report += '       <h2>' + text + '</h2>\n';
 	}
 
 	/**

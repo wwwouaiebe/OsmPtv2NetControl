@@ -80,16 +80,21 @@ class OsmDataLoader {
 
 	async fetchData ( ) {
 		let uri = '';
+		let uriArea = 0 === theConfig.osmArea ? 'rel' : 'relation(area:' + theConfig.osmArea + ')';
+
 		if ( 0 === theConfig.osmRelation ) {
 			uri =
 			'https://lz4.overpass-api.de/api/interpreter?data=[out:json][timeout:40];' +
-			'relation(area:' + theConfig.osmArea + ')[network=TECL][operator=TEC]' +
-			'[type="' + theConfig.osmType + '"]->.rou;' +
-			'(.rou <<; - .rou;); >> ->.rm;.rm out;';
+			uriArea +
+			'[network="' + theConfig.osmNetwork + '"]' +
+			'["' + theConfig.osmType + '"="' + theConfig.osmVehicle + '"]' +
+			'[type="' + theConfig.osmType + '"]' +
+			'->.rou;(.rou <<; - .rou;); >> ->.rm;.rm out;';
 		}
 		else {
 			uri = 'https://lz4.overpass-api.de/api/interpreter?data=[out:json][timeout:40];relation(' +
-			theConfig.osmRelation + ')->.rou;(.rou <<; - .rou;); >> ->.rm;.rm out;';
+			theConfig.osmRelation +
+			')->.rou;(.rou <<; - .rou;); >> ->.rm;.rm out;';
 		}
 
 		await fetch ( uri )
@@ -99,7 +104,8 @@ class OsmDataLoader {
 						return response.json ( );
 					}
 					console.error ( String ( response.status ) + ' ' + response.statusText );
-					process.exit ( 1 );
+
+					// process.exit ( 1 );
 				}
 			)
 			.then (
@@ -110,7 +116,8 @@ class OsmDataLoader {
 			.catch (
 				err => {
 					console.error ( err );
-					process.exit ( 1 );
+
+					// process.exit ( 1 );
 				}
 			);
 	}

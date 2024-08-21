@@ -22,7 +22,7 @@ Changes:
 */
 /* ------------------------------------------------------------------------------------------------------------------------- */
 
-import process from 'process';
+// import process from 'process';
 import theConfig from './Config.js';
 import OsmDataLoader from './OsmDataLoader.js';
 import OsmDataValidator from './OsmDataValidator.js';
@@ -48,17 +48,22 @@ class AppLoader {
 	static get #version ( ) { return 'v1.1.0'; }
 
 	/**
-	* Complete theConfig object from the app parameters
-	* @param {?Object} options The options for the app
+	* Complete theConfig object from the app parameters (nodejs) or the options parameter (browser)
+	* @param {?Object} options The options for the app when the browser is used
 	 */
 
-	#createConfig ( options ) {
+	async #createConfig ( options ) {
 
 		if ( options ) {
-			theConfig.dbName = options.dbName;
-			theConfig.appDir = process.cwd ( ) + '/node_modules/osmbus2mysql/src';
+			theConfig.osmArea = options.osmArea;
+			theConfig.osmNetwork = options.osmNetwork;
+			theConfig.osmRelation = options.osmRelation;
+			theConfig.osmType = options.osmType;
+			theConfig.osmVehicle = options.osmVehicle;
+			theConfig.engine = 'browser';
 		}
 		else {
+			theConfig.appDir = process.cwd ( ) + '/node_modules/osmbus2mysql/src';
 			process.argv.forEach (
 				arg => {
 					const argContent = arg.split ( '=' );
@@ -72,34 +77,37 @@ class AppLoader {
 					case '--osmRelation' :
 						theConfig.osmRelation = argContent [ 1 ] || theConfig.osmRelation;
 						break;
+					case '--osmNetwork' :
+						theConfig.osmNetwork = argContent [ 1 ] || theConfig.osmNetwork;
+						break;
+					case '--osmVehicle' :
+						theConfig.osmVehicle = argContent [ 1 ] || theConfig.osmVehicle;
+						break;
 					default :
 						break;
 					}
 				}
 			);
 
-			switch ( theConfig.osmType ) {
-			case 'proposed' :
-				theConfig.osmType = 'proposed:route';
-				break;
-			case 'used' :
-				theConfig.osmType = 'route';
-				break;
-			default :
-				console.error ( 'Invalid osmType' );
-				process.exit ( 1 );
-			}
-
-			if ( 0 === theConfig.osmArea && 0 === theConfig.osmRelation ) {
-				console.error ( 'Invalid osmArea or osmRelation' );
-				process.exit ( 1 );
-			}
-
 			theConfig.appDir = process.argv [ 1 ];
+			theConfig.engine = 'nodejs';
+		}
+
+		switch ( theConfig.osmType ) {
+		case 'proposed' :
+			theConfig.osmType = 'proposed:route';
+			break;
+		case 'used' :
+		case 'route' :
+			theConfig.osmType = 'route';
+			break;
+		default :
+			console.error ( 'Invalid osmType' );
+			process.exit ( 1 );
 		}
 
 		// the config is now frozen
-		Object.freeze ( theConfig );
+		// Object.freeze ( theConfig );
 	}
 
 	/**
@@ -112,21 +120,36 @@ class AppLoader {
 
 	/**
 	 * Load the app, searching all the needed infos to run the app correctly
+	 * @param {Object} options Coming soon
 	 */
 
-	async loadApp ( /* options */ ) {
-		this.#createConfig ( );
+	async loadApp ( options ) {
+
+		if ( ! options ) {
+			await import ( 'process' );
+			await import ( 'fs' );
+		}
+
+		this.#createConfig ( options );
+
 		theReport.open ( );
-		theReport.addP (
-			'Request : ' +
-			theConfig.osmType + ' ' +
-			( 0 === theConfig.osmArea ? '' : '- area : ' + theConfig.osmArea ) +
-			( 0 === theConfig.osmRelation ? '' : 'relation : ' + theConfig.osmRelation )
-		);
+
+		if ( 'nodejs' === theConfig.engine ) {
+			theReport.add (
+				'p',
+				'Request parameters: type = ' +
+					theConfig.osmType +
+					' - network = ' + theConfig.osmNetwork +
+					' - vehicle = ' + theConfig.osmVehicle +
+					( 0 === theConfig.osmArea ? '' : ' - area =  ' + theConfig.osmArea ) +
+					( 0 === theConfig.osmRelation ? '' : ' - relation = ' + theConfig.osmRelation ) +
+					' - ' + new Date ().toString ( )
+			);
+		}
 		await new MissingRouteMasterValidator ( ).fetchData ( );
 		await new OsmDataLoader ( ).fetchData ( );
 		new OsmDataValidator ( ).validate ( );
-		theReport.close ( );
+		await theReport.close ( );
 		console.error ( '\n' + theReport.errorCounter + ' errors  found' );
 	}
 }

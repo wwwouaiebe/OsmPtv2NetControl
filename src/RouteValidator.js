@@ -356,9 +356,10 @@ class RouteValidator {
 
 	validateRoute ( route ) {
 		this.#route = route;
-		theReport.addH2 (
-			'\nNow validating route ' + ( this.#route.tags.name ?? '' ) +
-			' ( ' + theReport.getOsmLink ( this.#route ) + ' )'
+		theReport.add (
+			'h2',
+			'\nNow validating route ' + ( this.#route.tags.name ?? '' ),
+			this.#route
 		);
 
 		this.#platforms = [];

@@ -24,11 +24,11 @@
     },
     "scripts": {
         "debug": "node node_modules/grunt/bin/grunt",
-        "loadDataProposed": "node ./src/index.js --osmType=proposed --osmArea=3601407192",
-        "loadDataEupen": "node ./src/index.js --osmType=used --osmArea=3602400207",
-        "loadDataLiègeCity": "node ./src/index.js --osmType=used --osmArea=3601681788",
-        "loadDataLiègeProvince": "node ./src/index.js --osmType=used --osmArea=3601407192",
-        "loadDataRelation": "node ./src/index.js --osmType=used --osmRelation=2361866"
+        "loadDataProposedTECL": "node ./src/indexNode.js --osmType=proposed",
+        "loadDataLiègeCity": "node ./src/indexNode.js --osmArea=3601681788",
+        "loadDataTECL": "node ./src/indexNode.js",
+        "loadDataIBXL": "node ./src/indexNode.js --osmNetwork=IBXL --osmVehicle=bus",
+        "loadDataRelation": "node ./src/indexNode.js --osmRelation=2361866"
     },
     "author": "wwwouaiebe",
     "license": "GPL-3.0",
