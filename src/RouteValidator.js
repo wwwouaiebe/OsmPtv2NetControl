@@ -330,6 +330,15 @@ class RouteValidator {
 				);
 			}
 		}
+		else if ( 'way' === member.type && 'subway' === theConfig.osmVehicle ) {
+			if ( 'subway' !== way?.tags?.railway ) {
+				theReport.addPError (
+					'An invalid railway (' + theReport.getOsmLink ( member ) +
+						') is used as way for the route ' + theReport.getOsmLink ( this.#route ),
+					this.#route.id
+				);
+			}
+		}
 		else {
 			theReport.addPError (
 				'An invalid object (' + theReport.getOsmLink ( member ) +

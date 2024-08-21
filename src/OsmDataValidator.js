@@ -100,7 +100,7 @@ class OsmDataValidator {
 
 				if ( routeMaster.tags.name !== vehicle + routeMaster.tags.ref ) {
 					theReport.addPError (
-						'Bad name for route_master (must be Bus ' + routeMaster.tags.ref + ')'
+						'Bad name for route_master (must be ' + vehicle + routeMaster.tags.ref + ')'
 						, routeMaster.id
 					);
 				}
