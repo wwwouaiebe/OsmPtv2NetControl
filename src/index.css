@@ -15,22 +15,79 @@ p {
 	text-decoration: none;
 }
 
-header {
-    text-align: center;
+@media (prefers-color-scheme: dark) {
+	:root {
+		--main-background-color: black;
+		--main-color: white;
+		--link-hover-color: lightgray;
+		--link-color: orange;
+	}
 }
 
-label {
-    margin-left: 1em;
-    margin-right: 1em;
+@media (prefers-color-scheme: light) {
+	:root {
+		--main-background-color: white;
+		--main-color: black;
+		--link-hover-color: #505050;
+		--link-color: #8b0000;
+	}
 }
 
 body {
 	line-height: normal;
 	font-family: Helvetica, Arial, sans-serif;
     margin-bottom: 5em;
-	margin-top: 2em;
 	margin-left: 2em;
 	margin-right: 2em;
+	color: var(--main-color);
+	background-color: var(--main-background-color);
+}
+
+body.cyDark {
+	--main-background-color: black;
+	--main-color: white;
+	--link-hover-color: lightgray;
+	--link-color: orange;
+}
+
+body.cyLight {
+	--main-background-color: white;
+	--main-color: black;
+	--link-hover-color: #505050;
+	--link-color: #8b0000;
+}
+
+header {
+	position: sticky;
+	top:0;
+	background-color: var(--main-background-color);
+	margin-top: 1em;
+	margin-bottom: 1em;
+	border-bottom-style: solid ;
+	border-bottom-width: 0.1em;
+	text-align: center;
+}
+footer {
+	border-top-style: solid ;
+	border-top-width: 0.1em;
+	position: sticky;
+	bottom: 0em;
+	left: 2em;;
+	background-color: var(--main-background-color);
+	padding-top: 1em;
+	margin-bottom: 1em;
+	text-align: center;
+}
+
+footer span {
+	margin-left: 1em;
+	margin-right: 1em;
+
+}
+
+label {
+    margin-left: 1em;
+    margin-right: 1em;
 }
 
 h1 {
@@ -76,8 +133,8 @@ a.josmedit:visited {
 
 #waitAnimation 
 {
-	margin-bottom: 1em; 
-	height: 1em; width: 100%; 
+	margin-bottom: 0em; 
+	height: 0.2em; width: 100%; 
 	overflow: hidden;
 	visibility: hidden;
 }
@@ -85,9 +142,51 @@ a.josmedit:visited {
 #waitAnimationBullet { 
 	background-color: red; 
 	height: 100%; 
-	width: 1em; 
+	width: 3em; 
 	animation: 2s linear 0s infinite alternate WaitAnimationBullet;
 }
+
+#cyDarkLight {
+	margin-left: 2em;;
+}
+
+main.errorsOnly h2 {
+	display: none !important;
+	width: 0;
+	height: 0;
+	margin: 0 !important;
+	padding: 0 !important;
+	top: 0;
+	left: 0;
+	border-width: 0 !important;
+	border-style: none !important;
+	animation: none;
+	visibility: hidden;
+	transform: scale(0);
+}
+main.errorsOnly h2:has(p) {
+	visibility:visible;
+	transform : scale(1,1);
+}
+main.errorsOnly h1 {
+	display: none !important;
+	width: 0;
+	height: 0;
+	margin: 0 !important;
+	padding: 0 !important;
+	top: 0;
+	left: 0;
+	border-width: 0 !important;
+	border-style: none !important;
+	animation: none;
+	visibility: hidden;
+	transform: scale(0);
+}
+main.errorsOnly h1:has(h2 > p) {
+	visibility:visible;
+	transform : scale(1,1);
+}
+
 
 @keyframes WaitAnimationBullet { from { margin-left: 0%; } to { margin-left: calc(100% - 1em); } }
 

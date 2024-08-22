@@ -22,11 +22,32 @@ Changes:
 */
 /* ------------------------------------------------------------------------------------------------------------------------- */
 
-import GoButtonClickEL from './GoButtonClickEL.js';
-import ErrorsOnlyButtonClickEL from './ErrorsOnlyButtonClickEL.js';
-import theThemeChanger from './ThemeChanger.js';
+/* ------------------------------------------------------------------------------------------------------------------------- */
+/**
+ * Coming soon
+ */
+/* ------------------------------------------------------------------------------------------------------------------------- */
 
-document.getElementById ( 'goInput' ).addEventListener ( 'click', new GoButtonClickEL ( ), false );
-document.getElementById ( 'errorsOnlyInput' ).addEventListener ( 'click', new ErrorsOnlyButtonClickEL ( ), false );
+class ErrorsOnlyButtonClickEL {
+
+	/**
+	 * The contructor
+	 */
+
+	constructor ( ) {
+		Object.freeze ( this );
+	}
+
+	/**
+	 * Coming soon
+	 */
+
+	handleEvent ( ) {
+		report.classList.toggle ( 'errorsOnly' );
+	}
+
+}
+
+export default ErrorsOnlyButtonClickEL;
 
 /* --- End of file --------------------------------------------------------------------------------------------------------- */

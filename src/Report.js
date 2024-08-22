@@ -153,7 +153,9 @@ class Report {
 	addPError ( text, osmId ) {
 
 		if ( 'browser' === theConfig.engine ) {
-			let josmEdit = '<button class="josmButton" data-osm-obj-id="' + osmId + '" >JOSM </button>';
+			let josmEdit = '<button title="Edit the relation with JOSM\nJOSM must be already opened!" ' +
+			'class="josmButton" data-osm-obj-id="' +
+			osmId + '" >JOSM </button>';
 			let htmlElement = document.createElement ( 'p' );
 			htmlElement.classList.add ( 'error' );
 			htmlElement.innerHTML = text + josmEdit;
