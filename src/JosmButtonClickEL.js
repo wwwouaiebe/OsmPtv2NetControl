@@ -28,71 +28,42 @@ Changes:
  */
 /* ------------------------------------------------------------------------------------------------------------------------- */
 
-class OsmData {
+class JosmButtonClickEL {
 
 	/**
-	 * Coming soon
-	 * @type {Map}
-	 */
-
-	routeMasters = new Map ( );
-
-	/**
-	 * Coming soon
-	 * @type {Map}
-	 */
-
-	routes = new Map ( );
-
-	/**
-	 * Coming soon
-	 * @type {Map}
-	 */
-
-	ways = new Map ( );
-
-	/**
-	 * Coming soon
-	 * @type {Map}
-	 */
-
-	platforms = new Map ( );
-
-	/**
-	 * Coming soon
-	 * @type {Map}
-	 */
-
-	nodes = new Map ( );
-
-	/**
-	 * The constructor
-	 */
+     * The constructor
+     */
 
 	constructor ( ) {
 		Object.freeze ( this );
 	}
 
 	/**
-	 * Coming soon
-	 */
+     * Event handler
+     * @param {Object} event The triggered event
+     */
 
-	clear ( ) {
-		this.nodes.clear ( );
-		this.platforms.clear ( );
-		this.routeMasters.clear ( );
-		this.routes.clear ( );
-		this.ways.clear ( );
+	async handleEvent ( event ) {
+		let osmObjId = event.target.dataset.osmObjId;
+		event.target.classList.add ( 'josmButtonVisited' );
+		await fetch (
+			'http://localhost:8111/load_object?new_layer=true&relation_members=true&objects=r' + osmObjId
+		)
+			.then (
+				response => {
+					console.error ( String ( response.status ) + ' ' + response.statusText );
+				}
+			)
+			.catch (
+				err => {
+					alert ( err + '\n\n Are you sure that JOSM is opened and ' +
+                        'the remote control activated ?' +
+                        '\n\nSee: https://josm.openstreetmap.de/wiki/Help/Preferences/RemoteControl' );
+				}
+			);
 	}
 }
 
-/**
- * Coming soon
- * @type {Object}
- */
-
-let theOsmData = new OsmData ( );
-
-export default theOsmData;
+export default JosmButtonClickEL;
 
 /* --- End of file --------------------------------------------------------------------------------------------------------- */

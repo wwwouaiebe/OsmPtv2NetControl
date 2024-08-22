@@ -24,6 +24,7 @@ Changes:
 
 import theConfig from './Config.js';
 import theOsmData from './OsmData.js';
+import JosmButtonClickEL from './JosmButtonClickEL.js';
 
 /* ------------------------------------------------------------------------------------------------------------------------- */
 /**
@@ -116,8 +117,11 @@ class Report {
 			this.#report.firstChild.textContent = String ( this.#errorCounter ) + ' errors found - ' +
 			String ( theOsmData.routeMasters.size ) + ' route_master and ' +
 			String ( theOsmData.routes.size ) + ' routes controlled';
-		}
-
+			let josmButtons = document.getElementsByClassName ( 'josmButton' );
+			for ( let counter = 0; counter < josmButtons.length; counter ++ ) {
+				josmButtons[ counter ].addEventListener ( 'click', new JosmButtonClickEL ( ) );
+			}
+		};
 	}
 
   	/**
@@ -148,17 +152,17 @@ class Report {
 
 	addPError ( text, osmId ) {
 
-		let josmEdit = ' ( <a class ="josmedit" target="_blank" ' +
-		'href="http://localhost:8111/load_object?new_layer=true&relation_members=true&objects=r' + osmId + 
-		'">Edit with JOSM</a> )';
-
 		if ( 'browser' === theConfig.engine ) {
+			let josmEdit = '<button class="josmButton" data-osm-obj-id="' + osmId + '" >JOSM </button>';
 			let htmlElement = document.createElement ( 'p' );
 			htmlElement.classList.add ( 'error' );
 			htmlElement.innerHTML = text + josmEdit;
 			this.#report.appendChild ( htmlElement );
 		}
 		else {
+			let josmEdit = ' ( <a class ="josmedit" target="_blank" ' +
+			'href="http://localhost:8111/load_object?new_layer=true&relation_members=true&objects=r' + osmId +
+			'">Edit with JOSM</a> )';
 			this.#report += '       <p class="error">' + text + josmEdit + '</p>\n';
 		}
 

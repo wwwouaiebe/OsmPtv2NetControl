@@ -22,51 +22,18 @@ Changes:
 */
 /* ------------------------------------------------------------------------------------------------------------------------- */
 
+import AppLoader from './AppLoader.js';
+
 /* ------------------------------------------------------------------------------------------------------------------------- */
 /**
  * Coming soon
  */
 /* ------------------------------------------------------------------------------------------------------------------------- */
 
-class OsmData {
+class GoButtonClickEL {
 
 	/**
-	 * Coming soon
-	 * @type {Map}
-	 */
-
-	routeMasters = new Map ( );
-
-	/**
-	 * Coming soon
-	 * @type {Map}
-	 */
-
-	routes = new Map ( );
-
-	/**
-	 * Coming soon
-	 * @type {Map}
-	 */
-
-	ways = new Map ( );
-
-	/**
-	 * Coming soon
-	 * @type {Map}
-	 */
-
-	platforms = new Map ( );
-
-	/**
-	 * Coming soon
-	 * @type {Map}
-	 */
-
-	nodes = new Map ( );
-
-	/**
-	 * The constructor
+	 * The contructor
 	 */
 
 	constructor ( ) {
@@ -77,22 +44,39 @@ class OsmData {
 	 * Coming soon
 	 */
 
-	clear ( ) {
-		this.nodes.clear ( );
-		this.platforms.clear ( );
-		this.routeMasters.clear ( );
-		this.routes.clear ( );
-		this.ways.clear ( );
+	handleEvent ( ) {
+
+		let osmNetwork = document.getElementById ( 'osmNetworkInput' ).value;
+		let osmVehicle = document.getElementById ( 'osmVehicleSelect' ).value;
+		let osmType = document.getElementById ( 'osmTypeSelect' ).value;
+		let osmArea = document.getElementById ( 'osmAreaInput' ).value;
+		let osmRelation = document.getElementById ( 'osmRelationInput' ).value;
+
+		// Todo verification of input
+
+		if ( '' === osmArea ) {
+			osmArea = '0';
+		}
+		if ( '0' !== osmArea ) {
+			// eslint-disable-next-line no-magic-numbers
+			osmArea = '36' + osmArea.padStart ( 8, '0' );
+		}
+		if ( '' === osmRelation ) {
+			osmRelation = '0';
+		}
+
+		new AppLoader ( ).loadApp (
+			{
+				osmNetwork : osmNetwork,
+				osmVehicle : osmVehicle,
+				osmType : osmType,
+				osmArea : Number.parseInt ( osmArea ),
+				osmRelation : Number.parseInt ( osmRelation )
+			}
+		);
 	}
 }
 
-/**
- * Coming soon
- * @type {Object}
- */
-
-let theOsmData = new OsmData ( );
-
-export default theOsmData;
+export default GoButtonClickEL;
 
 /* --- End of file --------------------------------------------------------------------------------------------------------- */

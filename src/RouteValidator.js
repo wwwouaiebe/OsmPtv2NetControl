@@ -240,9 +240,9 @@ class RouteValidator {
 			let platform = theOsmData.ways.get ( member.ref );
 			this.#platforms.push ( platform );
 			if (
-				( 'platform' !== platform?.tags?.highway  && 'bus' ===theConfig.osmVehicle )
+				( 'platform' !== platform?.tags?.highway && 'bus' === theConfig.osmVehicle )
 				||
-				( 'platform' !== platform?.tags?.railway  && 'tram' ===theConfig.osmVehicle )
+				( 'platform' !== platform?.tags?.railway && 'tram' === theConfig.osmVehicle )
 			) {
 				theReport.addPError (
 					'An invalid way (' + theReport.getOsmLink ( member ) +

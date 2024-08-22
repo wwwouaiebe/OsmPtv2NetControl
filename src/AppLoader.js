@@ -146,7 +146,6 @@ class AppLoader {
 		await new OsmDataLoader ( ).fetchData ( );
 		new OsmDataValidator ( ).validate ( );
 		await theReport.close ( );
-		console.error ( '\n' + theReport.errorCounter + ' errors  found' );
 	}
 }
 
