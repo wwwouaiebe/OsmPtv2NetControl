@@ -4,6 +4,10 @@
 
 A relation is present in the route_master but it's not a bus route. Verify the tags of this bad relation or remove it from the route_master
 
+## Aa route_master (...) in a route_master is found
+
+A route_master must contains only route.  
+
 ## A member of the route master is not a relation
 
 A way or a node is found as member of the route_master. Remove it from the route_master

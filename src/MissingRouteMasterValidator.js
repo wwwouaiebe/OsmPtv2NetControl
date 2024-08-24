@@ -38,7 +38,7 @@ class MissingRouteMasterValidator {
 	 @param {Array} elements Coming soon
 	 */
 
-	 #reportMissingRouteMaster ( elements ) {
+	#reportMissingRouteMaster ( elements ) {
 		if ( elements ) {
 			theReport.add ( 'h1', 'Routes without route_master' );
 		}

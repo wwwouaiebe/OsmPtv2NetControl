@@ -86,11 +86,22 @@ class OsmDataValidator {
 
 		let routeMasterArray = [];
 		let routeMasterWithoutRef = false;
+		let routeMasterInRouteMaster = false;
 		let vehicle = theConfig.osmVehicle.substring ( 0, 1 ).toUpperCase ( ) +
 			theConfig.osmVehicle.substring ( 1 ) + ' ';
 		theOsmData.routeMasters.forEach (
 			routeMaster => {
 				routeMasterArray.push ( routeMaster );
+				routeMaster.members.forEach (
+					member => {
+						if ( theOsmData.routeMasters.get ( member.ref ) ) {
+							theReport.addPError (
+								'A route_master (' + member.ref + ') in a route_master is found ', routeMaster.id
+							);
+							routeMasterInRouteMaster = true;
+						}
+					}
+				);
 				if ( ! routeMaster?.tags?.ref ) {
 					theReport.addPError (
 						'Route_master without ref tag ', routeMaster.id
@@ -114,7 +125,13 @@ class OsmDataValidator {
 				return result;
 			}
 		);
-		if ( routeMasterWithoutRef ) {
+		if ( routeMasterWithoutRef || routeMasterInRouteMaster ) {
+			theReport.add (
+				'p',
+				'Critical errors founds (route_master in route_master or route_master without ref tag). ' +
+				'You must first correct the errors and then restart a validation.'
+			);
+
 			return;
 		}
 		routeMasterArray.forEach (

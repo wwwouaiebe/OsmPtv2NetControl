@@ -24,6 +24,9 @@ Changes:
 
 import GoButtonClickEL from './GoButtonClickEL.js';
 import ErrorsOnlyButtonClickEL from './ErrorsOnlyButtonClickEL.js';
+
+// all the necessary code is inside the constructor of theThemeChanger so...
+// eslint-disable-next-line no-unused-vars
 import theThemeChanger from './ThemeChanger.js';
 
 document.getElementById ( 'goInput' ).addEventListener ( 'click', new GoButtonClickEL ( ), false );
