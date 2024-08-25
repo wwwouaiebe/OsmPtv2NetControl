@@ -8,22 +8,22 @@ See the LICENSE file (GNU GENERAL PUBLIC LICENSE Version 3).
 
 ## Installation
 
-You are null for program installation? Use the demo 
+You are null for program installation? Use the demo or the version installed on my [web site](https://www.ouaie.be/OsmPtv2NetControl/) 
 
-You have a web server (local or on the web)? Download the last version and install the src folder on your server (you can rename the folder to wath you will) and load the index.html file from your browser.
+You have a web server (local or on the web)? Download the last release and install the src folder on your server (you can rename the folder to what you will) and load the index.html file from your browser.
 
-You are a crazy developper? install nodejs, npm and the npm package osmptv2netcontrol. Good luck.
+You are a crazy developper? install nodejs, npm, the npm package osmptv2netcontrol and Visual Studio Code. Good luck.
 
 ## How to use 
 
 On the main web page complete:
 - the network (for BE users: 'TECL', TECX', 'TECN', 'TECB', 'TECC', 'TECH', 'IBXL', 'DLOV','DLLi'...)
 - select a vehicle in the dropdown list
-- select a type (used for the currently used relations, proposed for the relations with 'proposed' status)
-- enter an area osm id if you will limit the control to a precise area (exemple 1681788 for Liège, 897671 for Gent... )
+- select a type ('used' for the currently used relations, 'proposed' for the relations with 'proposed' status)
+- enter an area osm id if you will limit the control to a precise area (exemple: 1681788 for Liège, 897671 for Gent... )
 - enter a route relation osm id if you will limit to one relation. In that case, it's not needed to complete the network. The route and all the routes attached to the same route_master are controlled.
 - click on the 'go' button to start the program
-- click on the 'errors button to show only the errors or show all
+- click on the 'errors button' to show only the errors or show all
 
 ## detected errors and how to solve
 
