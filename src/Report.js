@@ -35,28 +35,30 @@ import JosmButtonClickEL from './JosmButtonClickEL.js';
 class Report {
 
 	/**
-	* Coming soon
-	* @type {String}
+	* The report. A string for nodejs or an HTMLElement for browser
+	* @type {String|HTMLElement}
 	 */
 
 	#report = '';
 
 	/**
-	* Coming soon
+	* A counter for errors
 	* @type {Number}
 	 */
 
 	#errorCounter = 0;
 
 	/**
-	* Coming soon
+	* The value of the errorCounter
 	@type {Number}
 	 */
 
 	get errorCounter ( ) { return this.#errorCounter; }
 
    	/**
-	* Coming soon
+	 * open the report.
+	 * - for browser : clean the HTMLElement where the error have to be reported, add a title and start an animation
+	 * - for nodejs : add the html header as text to the report and add a line withe user's request
 	 */
 
 	open ( ) {
@@ -97,11 +99,24 @@ class Report {
 				'		<link rel="stylesheet" href="report.css" />\n' +
 				'	</head>\n' +
 				'	<body>\n';
+
+			this.add (
+				'p',
+				'Request parameters: type = ' +
+						theConfig.osmType +
+						' - network = ' + theConfig.osmNetwork +
+						' - vehicle = ' + theConfig.osmVehicle +
+						( 0 === theConfig.osmArea ? '' : ' - area =  ' + theConfig.osmArea ) +
+						( 0 === theConfig.osmRelation ? '' : ' - relation = ' + theConfig.osmRelation ) +
+						' - ' + new Date ().toString ( )
+			);
 		}
 	}
 
   	/**
-	* Coming soon
+	 * close the report
+	 * for browser: close the animation, add the error counter and event listeners for JOSM buttons
+	 * for nodejs: close the body and html tags and save the report to a file
 	 */
 
 	async close ( ) {
@@ -125,10 +140,10 @@ class Report {
 	}
 
   	/**
-	* Coming soon
-	* @param {String} htmlTag Coming soon
-	* @param {String} text Coming soon
-	* @param {Object} osmObject Coming soon
+	* Add a text to the report
+	* @param {String} htmlTag The html tag to use
+	* @param {String} text the text to add
+	* @param {Object} osmObject When not null, a link to osm is added at the end of the text
 	 */
 
 	add ( htmlTag, text, osmObject ) {
@@ -145,9 +160,9 @@ class Report {
 	}
 
 	/**
-	* Coming soon
-	* @param {String} text Coming soon
-	* @param {Number} osmId Coming soon
+	* Add an error to the report
+	* @param {String} text The text explaining the error
+	* @param {Number} osmId The osm id of the falsy object. This id is used for the JOSM button
 	 */
 
 	addPError ( text, osmId ) {
@@ -172,8 +187,9 @@ class Report {
 	}
 
 	/**
-	* Coming soon
-	* @param {?Object} member Coming soon
+	 * Get a URL to osm with a ling to an osm object
+	 * @param {Object} member an osm object or a member of a relation
+	 * @returns {string} An url to osm
 	 */
 
 	getOsmLink ( member ) {
@@ -210,8 +226,8 @@ class Report {
 }
 
 /**
- * Coming soon
- * @type {Object}
+ * The one and only one Report object
+ * @type {Report}
  */
 
 let theReport = new Report ( );

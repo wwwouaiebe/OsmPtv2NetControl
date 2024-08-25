@@ -32,32 +32,34 @@ import theReport from './Report.js';
  */
 /* ------------------------------------------------------------------------------------------------------------------------- */
 
-class RouteValidator {
+class OsmRouteValidator {
 
  	/**
-	 * Coming soon
+	 * The route currently controlled
 	 * @type {Object}
 	 */
 
 	#route = null;
 
 	/**
-	 * Coming soon
+	 * The platforms associated to the route (= members with 'platform' role)
 	 * @type {Array}
 	 */
 
 	#platforms = [];
 
 	/**
-	 * Coming soon
+	 * the ways associated to the route (= members without role but having an highway tag
+	 * for bus or a railway tag for tram and subway)
 	 * @type {Array}
 	 */
 
 	#ways = [];
 
 	/**
-	* Coming soon
-	 @param {Object} way Coming soon
+	* Verify that a way is circular (= same node for the first and last node)
+	 @param {Object} way to verify
+	 @returns {boolean} True when the way is circular
 	 */
 
 	#wayIsRoundabout ( way ) {
@@ -65,7 +67,7 @@ class RouteValidator {
 	}
 
 	/**
-	* Coming soon
+	* Verify that two ways are sharing a node at the beginning or at the end
 	 @param {Object} way Coming soon
 	 @param {Object} previousWay Coming soon
 	 */
@@ -77,25 +79,28 @@ class RouteValidator {
 	}
 
 	/**
-	* Coming soon
-	 @param {Object} way Coming soon
-	 @param {Object} previousWay Coming soon
+	 * Verify that for two ways:
+	 * - one way is circular (= same node for the first and last node)
+	 * - the other way have the start node or end node shared with the circular way
+	 * @returns {boolean} True when a node is shared between the two ways
+	 * @param {Object} firstWay the first way to test
+	 * @param {Object} secondWay the second way to test
 	 */
 
-	 #waysViaRoundabout ( way, previousWay ) {
-		if ( this.#wayIsRoundabout ( way ) ) {
-			return -1 !== way.nodes.indexOf ( previousWay.nodes [ 0 ] ) ||
-				-1 !== way.nodes.indexOf ( previousWay.nodes.toReversed ( ) [ 0 ] );
+	 #waysViaRoundabout ( firstWay, secondWay ) {
+		if ( this.#wayIsRoundabout ( firstWay ) ) {
+			return -1 !== firstWay.nodes.indexOf ( secondWay.nodes [ 0 ] ) ||
+				-1 !== firstWay.nodes.indexOf ( secondWay.nodes.toReversed ( ) [ 0 ] );
 		}
-		else if ( this.#wayIsRoundabout ( previousWay ) ) {
-			return -1 !== previousWay.nodes.indexOf ( way.nodes [ 0 ] ) ||
-				-1 !== previousWay.nodes.indexOf ( way.nodes.toReversed ( ) [ 0 ] );
+		else if ( this.#wayIsRoundabout ( secondWay ) ) {
+			return -1 !== secondWay.nodes.indexOf ( firstWay.nodes [ 0 ] ) ||
+				-1 !== secondWay.nodes.indexOf ( firstWay.nodes.toReversed ( ) [ 0 ] );
 		}
 		return false;
 	}
 
 	/**
-	* Coming soon
+	* Verify that the ways of the route are continuous
 	 */
 
 	#validateWaysOrder ( ) {
@@ -123,17 +128,22 @@ class RouteValidator {
 	}
 
 	/**
-	* Coming soon
+	* Validate the from tag
 	 */
 
 	#validateFrom ( ) {
+
 		if ( ! this.#route?.tags?.from ) {
+
+			// no from tag
 			theReport.addPError (
 				'A from tag is not found for route ' + theReport.getOsmLink ( this.#route ),
 				this.#route.id
 			);
 		}
 		else if ( this.#route?.tags?.from !== this.#platforms[ 0 ]?.tags?.name ) {
+
+			// from tag is not the same than the name of the first platform
 			theReport.addPError (
 				'The from tag ( ' + this.#route?.tags?.from +
 				' ) is not equal to the name of the first platform ( ' +
@@ -144,17 +154,21 @@ class RouteValidator {
 	}
 
 	/**
-	* Coming soon
+	* Validate the to tag
 	 */
 
 	#validateTo ( )	{
 		if ( ! this.#route?.tags?.to ) {
+
+			// no to tag
 			theReport.addPError (
 				'A to tag is not found for route ' + theReport.getOsmLink ( this.#route ),
 				this.#route.id
 			);
 		}
 		else if ( this.#route?.tags?.to !== this.#platforms.toReversed ( )[ 0 ]?.tags?.name ) {
+
+			// to tag is not the same than the name of the last platform
 			theReport.addPError (
 				'The to tag ( ' + this.#route?.tags?.to +
 				' ) is not equal to the name of the last platform ( ' +
@@ -165,7 +179,7 @@ class RouteValidator {
 	}
 
 	/**
-	* Coming soon
+	* Verify that the route have a from tag, a to tag, a name tag and a ref tag
 	 */
 
 	#haveTagsNameFromToRef ( ) {
@@ -173,7 +187,7 @@ class RouteValidator {
 	}
 
 	/**
-	* Coming soon
+	* Verify that the name is compliant with the osm rules
 	 */
 
 	#validateName ( ) {
@@ -198,7 +212,8 @@ class RouteValidator {
 	}
 
 	/**
-	* Coming soon
+	 * Verify the position of the objects with a role. The objects with a role
+	 * must be at the top of the relation and the objects without role at the end
 	 */
 
 	#validateRolesOrder ( ) {
@@ -220,8 +235,12 @@ class RouteValidator {
 	}
 
 	/**
-	* Coming soon
-    @param { Object } member Coming soon
+	 * Verify that, for objects having a 'platform' role:
+	 * - the platform have an highway='bus_stop' tag when the platform is a node
+	 * - the platform have an highway='platform' tag when the plaform is a way and the vehicle is a bus
+	 * - the platform have an railway='platform' tag when the plaform is a way and the vehicle is a tram or subway
+	 * - note: role can be platform, platform_entry_only or platform_exit_only
+    @param { Object } member The osm member with the 'platform' role
 	 */
 
 	#validatePlatformRole ( member ) {
@@ -254,8 +273,9 @@ class RouteValidator {
 	}
 
 	/**
-	* Coming soon
-    @param { Object } member Coming soon
+	 * Verify that, for objects having a 'stop' role:
+	 * - the member have a tag public_transport='stop_position'
+     * @param { Object } member The osm member with the 'stop' role
 	 */
 
 	#validateStopRole ( member ) {
@@ -279,12 +299,13 @@ class RouteValidator {
 	}
 
 	/**
-	* Coming soon
-	@param {Object} way Coming soon
-	@param {Object} member Coming soon
+	 * Verify that a way is a valid way for a bus:
+	 * - the highway tag of way is in the validBusHighways highway
+	 * - or the way have a bus=yes tag or psv=yes tag
+	 * @param {Object} way The way to verify
 	 */
 
-	#validateWayForBus ( way, member ) {
+	#validateWayForBus ( way ) {
 		const validBusHighways =
 		[
 			'motorway',
@@ -311,7 +332,7 @@ class RouteValidator {
 			'yes' !== way?.tags [ theConfig.osmVehicle ]
 	   ) {
 		   theReport.addPError (
-			   'An invalid highway (' + theReport.getOsmLink ( member ) +
+			   'An invalid highway (' + theReport.getOsmLink ( way ) +
 				   ') is used as way for the route ' + theReport.getOsmLink ( this.#route ),
 			   this.#route.id
 		   );
@@ -323,15 +344,15 @@ class RouteValidator {
 	}
 
 	/**
-	* Coming soon
-	@param {Object} way Coming soon
-	@param {Object} member Coming soon
+	 * Verify that a way is valid for a tram:
+	 * - the way must have a railway=tram tag
+	 * @param {Object} way The way to verify
 	 */
 
-	#validateWayForTram ( way, member ) {
+	#validateWayForTram ( way ) {
 		if ( 'tram' !== way?.tags?.railway ) {
 			theReport.addPError (
-				'An invalid railway (' + theReport.getOsmLink ( member ) +
+				'An invalid railway (' + theReport.getOsmLink ( way ) +
 					') is used as way for the route ' + theReport.getOsmLink ( this.#route ),
 				this.#route.id
 			);
@@ -340,15 +361,15 @@ class RouteValidator {
 	}
 
 	/**
-	* Coming soon
-	@param {Object} way Coming soon
-	@param {Object} member Coming soon
+	 * Verify that a way is valid for a subway:
+	 * - the way must have a railway=subway tag
+	 * @param {Object} way The way to verify
 	 */
 
-	#validateWayForSubway ( way, member ) {
+	#validateWayForSubway ( way ) {
 		if ( 'subway' !== way?.tags?.railway ) {
 			theReport.addPError (
-				'An invalid railway (' + theReport.getOsmLink ( member ) +
+				'An invalid railway (' + theReport.getOsmLink ( way ) +
 					') is used as way for the route ' + theReport.getOsmLink ( this.#route ),
 				this.#route.id
 			);
@@ -356,8 +377,8 @@ class RouteValidator {
 	}
 
 	/**
-	* Coming soon
-    @param { Object } member Coming soon
+	* Verify that a way is a valid way for an empty role
+    @param { Object } member the member to verify
 	 */
 
 	#validateWayRole ( member ) {
@@ -365,13 +386,13 @@ class RouteValidator {
 		if ( 'way' === member.type ) {
 			switch ( theConfig.osmVehicle ) {
 			case 'bus' :
-				this.#validateWayForBus ( way, member );
+				this.#validateWayForBus ( way );
 				break;
 			case 'tram' :
-				this.#validateWayForTram ( way, member );
+				this.#validateWayForTram ( way );
 				break;
 			case 'subway' :
-				this.#validateWayForSubway ( way, member );
+				this.#validateWayForSubway ( way );
 				break;
 			default :
 				break;
@@ -387,7 +408,8 @@ class RouteValidator {
 	}
 
 	/**
-	* Coming soon
+	 * Verify that all the members of the route relation have a valid role
+	 * and can be used for this role
 	 */
 
 	#validateRolesObjects ( ) {
@@ -419,18 +441,21 @@ class RouteValidator {
 	}
 
 	/**
-	* Coming soon
-    @param { Object } route Coming soon
+	 * Validate a route
+     * @param { Object } route The route to validate
 	 */
 
 	validateRoute ( route ) {
 		this.#route = route;
+
+		// title
 		theReport.add (
 			'h2',
-			'\nNow validating route ' + ( this.#route.tags.name ?? '' ),
+			'\nNow validating route ' + ( this.#route.tags.name ?? '' ) + ' ',
 			this.#route
 		);
 
+		// validation
 		this.#platforms = [];
 		this.#ways = [];
 		this.#validateRolesObjects ( );
@@ -451,14 +476,6 @@ class RouteValidator {
 
 }
 
-/* ------------------------------------------------------------------------------------------------------------------------- */
-/**
- * The one and only one instance of RouteValidator class.
- */
-/* ------------------------------------------------------------------------------------------------------------------------- */
-
-let theRouteValidator = new RouteValidator;
-
-export default theRouteValidator;
+export default OsmRouteValidator;
 
 /* --- End of file --------------------------------------------------------------------------------------------------------- */

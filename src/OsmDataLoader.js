@@ -27,18 +27,18 @@ import theConfig from './Config.js';
 
 /* ------------------------------------------------------------------------------------------------------------------------- */
 /**
- * Coming soon
+ * This class call the overpass-api to obtains the data and load the data in the OsmData object
  */
 /* ------------------------------------------------------------------------------------------------------------------------- */
 
 class OsmDataLoader {
 
 	/**
-	* Coming soon
-	* @param {?Object} elements Coming soon
+	* load the data in the OsmData object
+	* @param {Array} elements An array with the elements part of the overpass-api response
 	 */
 
-	async #loadOsmData ( elements ) {
+	#loadOsmData ( elements ) {
 
 		elements.forEach (
 			element => {
@@ -46,15 +46,12 @@ class OsmDataLoader {
 				case 'relation' :
 					switch ( element.tags.type ) {
 					case 'route_master' :
-						theOsmData.routeMasters.set ( element.id, element );
-						break;
 					case 'proposed:route_master' :
 						theOsmData.routeMasters.set ( element.id, element );
 						break;
 					case 'route' :
-						theOsmData.routes.set ( element.id, element );
-						break;
 					case 'proposed:route' :
+						element.routeMasters = [];
 						theOsmData.routes.set ( element.id, element );
 						break;
 					default :
@@ -75,10 +72,31 @@ class OsmDataLoader {
 	}
 
 	/**
-	* Coming soon
+	 * Add the route_masters id to the routeMasters array of the routes
+	 */
+
+	#addRouteMastersToRoutes ( ) {
+		theOsmData.routeMasters.forEach (
+			routeMaster => {
+				routeMaster.members.forEach (
+					member => {
+						let route = theOsmData.routes.get ( member.ref );
+						if ( route ) {
+							route.routeMasters.push ( routeMaster.id );
+						}
+					}
+				);
+			}
+		);
+	}
+
+	/**
+	* fetch data from the overpass-api
 	 */
 
 	async fetchData ( ) {
+
+		// uri creation
 		let uri = '';
 		let uriArea = 0 === theConfig.osmArea ? 'rel' : 'relation(area:' + theConfig.osmArea + ')';
 
@@ -97,6 +115,8 @@ class OsmDataLoader {
 			')->.rou;(.rou <<; - .rou;); >> ->.rm;.rm out;';
 		}
 
+		// fetch overpass-api
+		let success = false;
 		await fetch ( uri )
 			.then (
 				response => {
@@ -104,22 +124,23 @@ class OsmDataLoader {
 						return response.json ( );
 					}
 					console.error ( String ( response.status ) + ' ' + response.statusText );
-
-					// process.exit ( 1 );
 				}
 			)
 			.then (
-				async jsonResponse => {
-					await this.#loadOsmData ( jsonResponse.elements );
+				jsonResponse => {
+
+					// loading data
+					this.#loadOsmData ( jsonResponse.elements );
+					this.#addRouteMastersToRoutes ( );
+					success = true;
 				}
 			)
 			.catch (
 				err => {
 					console.error ( err );
-
-					// process.exit ( 1 );
 				}
 			);
+		return success;
 	}
 
 	/**

@@ -24,7 +24,7 @@ Changes:
 
 /* ------------------------------------------------------------------------------------------------------------------------- */
 /**
- * Coming soon
+ * Event handler for click on the JOSM buttons of the web page
  */
 /* ------------------------------------------------------------------------------------------------------------------------- */
 
@@ -44,8 +44,14 @@ class JosmButtonClickEL {
      */
 
 	async handleEvent ( event ) {
+
+		// searching the osm id involved in the data of the button
 		let osmObjId = event.target.dataset.osmObjId;
+
+		// changing the button color
 		event.target.classList.add ( 'josmButtonVisited' );
+
+		// calling josm
 		await fetch (
 			'http://localhost:8111/load_object?new_layer=true&relation_members=true&objects=r' + osmObjId
 		)

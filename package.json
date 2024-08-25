@@ -1,6 +1,6 @@
 {
     "type": "module",
-    "name": "OsmPtv2NetControl",
+    "name": "osmptv2netcontrol",
     "description": "Coming soon",
     "main": "bin/index.js",
     "bin": {
@@ -25,7 +25,7 @@
     "scripts": {
         "debug": "node node_modules/grunt/bin/grunt",
         "loadDataProposedTECL": "node ./src/indexNode.js --osmType=proposed",
-        "loadDataLiègeCity": "node ./src/indexNode.js --osmArea=3601681788",
+        "loadDataLiègeCity": "node ./src/indexNode.js --osmArea=1681788",
         "loadDataTECL": "node ./src/indexNode.js",
         "loadDataIBXL": "node ./src/indexNode.js --osmNetwork=TECH --osmVehicle=bus",
         "loadDataRelation": "node ./src/indexNode.js --osmRelation=2361866"

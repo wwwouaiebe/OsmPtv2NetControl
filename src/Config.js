@@ -31,49 +31,50 @@ Changes:
 class Config {
 
 	/**
-	 * The directory where the app is installed. Coming from the app parameter
+	 * The directory where the app is installed on the computer. Needed for the report with nodejs.
+	 * Coming from the app parameter
 	 * @type {String}
 	 */
 
 	appDir;
 
 	/**
-	 * Coming soon
+	 * The type of routes to be analysed ('route' or 'proposed:route')
 	 * @type {string}
 	 */
 
 	osmType;
 
 	/**
-	 * Coming soon
+	 * The osm area when the control is limited to an area
 	 * @type {number}
 	 */
 
 	osmArea;
 
 	/**
-	 * Coming soon
+	 * The osm relation when the control is limited to a relation
 	 * @type {number}
 	 */
 
 	osmRelation;
 
 	/**
-	 * Coming soon
+	 * The osm network ('TECL', 'TECX', 'IBXL' or any other network)
 	 * @type {string}
 	 */
 
 	osmNetwork;
 
 	/**
-	 * Coming soon
+	 * the osm vehicle ('bus','tram' or 'subway')
 	 * @type {string}
 	 */
 
 	osmVehicle;
 
 	/**
-	 * Coming soon
+	 * the engine used ( 'browser' or 'nodejs')
 	 * @type {string}
 	 */
 
@@ -97,7 +98,7 @@ class Config {
 
 /* ------------------------------------------------------------------------------------------------------------------------- */
 /**
- * The one and only one instance of Config class. Notice that the object will be froozen directly after reading the parameters
+ * The one and only one instance of Config class. Notice that the object will be sealed directly after reading the parameters
  */
 /* ------------------------------------------------------------------------------------------------------------------------- */
 

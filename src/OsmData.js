@@ -24,42 +24,42 @@ Changes:
 
 /* ------------------------------------------------------------------------------------------------------------------------- */
 /**
- * Coming soon
+ * Simple container for the collected osm data
  */
 /* ------------------------------------------------------------------------------------------------------------------------- */
 
 class OsmData {
 
 	/**
-	 * Coming soon
+	 * A js map for the osm route_masters relations
 	 * @type {Map}
 	 */
 
 	routeMasters = new Map ( );
 
 	/**
-	 * Coming soon
+	 * A js map for the osm route relations
 	 * @type {Map}
 	 */
 
 	routes = new Map ( );
 
 	/**
-	 * Coming soon
+	 * A js map for the osm ways
 	 * @type {Map}
 	 */
 
 	ways = new Map ( );
 
 	/**
-	 * Coming soon
+	 * A js map for the platforms
 	 * @type {Map}
 	 */
 
 	platforms = new Map ( );
 
 	/**
-	 * Coming soon
+	 * A js map for the osm nodes
 	 * @type {Map}
 	 */
 
@@ -74,7 +74,7 @@ class OsmData {
 	}
 
 	/**
-	 * Coming soon
+	 * Cleaner for the maps
 	 */
 
 	clear ( ) {
@@ -86,10 +86,11 @@ class OsmData {
 	}
 }
 
+/* ------------------------------------------------------------------------------------------------------------------------- */
 /**
- * Coming soon
- * @type {Object}
+ * The one and only one instance of OsmData class.
  */
+/* ------------------------------------------------------------------------------------------------------------------------- */
 
 let theOsmData = new OsmData ( );
 

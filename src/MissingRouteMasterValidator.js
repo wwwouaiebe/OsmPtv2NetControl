@@ -27,21 +27,25 @@ import theConfig from './Config.js';
 
 /* ------------------------------------------------------------------------------------------------------------------------- */
 /**
- * Coming soon
+ * This class search all bus/tram/metro relations without route_master and add the errors to the report
  */
 /* ------------------------------------------------------------------------------------------------------------------------- */
 
 class MissingRouteMasterValidator {
 
 	/**
-	* Coming soon
+	* Add the errors to the report
 	 @param {Array} elements Coming soon
 	 */
 
 	#reportMissingRouteMaster ( elements ) {
+
+		// title... if errors found
 		if ( elements ) {
 			theReport.add ( 'h1', 'Routes without route_master' );
 		}
+
+		// errors
 		elements.forEach (
 			element => {
 				theReport.addPError (
@@ -53,15 +57,17 @@ class MissingRouteMasterValidator {
 	}
 
 	/**
-	* Coming soon
+	* fetch the data from overpass-api
 	 */
 
 	 async fetchData ( ) {
 
+		// exit if the control is only on one relation
 		if ( 0 !== theConfig.osmRelation ) {
 			return;
 		}
 
+		// Creation of the uri
 		let uriArea = 0 === theConfig.osmArea ? 'rel' : 'relation(area:' + theConfig.osmArea + ')';
 
 		let uri =
@@ -75,6 +81,7 @@ class MissingRouteMasterValidator {
 			'(br.all);rel["' + theConfig.osmType + '"="' + theConfig.osmVehicle + '"]' +
 			'(r)->.b;(.all; - .b; );out;';
 
+		// fetch
 		await fetch ( uri )
 			.then (
 				response => {
@@ -82,20 +89,16 @@ class MissingRouteMasterValidator {
 						return response.json ( );
 					}
 					console.error ( String ( response.status ) + ' ' + response.statusText );
-
-					// process.exit ( 1 );
 				}
 			)
 			.then (
-				async jsonResponse => {
-					await this.#reportMissingRouteMaster ( jsonResponse.elements );
+				jsonResponse => {
+					this.#reportMissingRouteMaster ( jsonResponse.elements );
 				}
 			)
 			.catch (
 				err => {
 					console.error ( err );
-
-					// process.exit ( 1 );
 				}
 			);
 	}

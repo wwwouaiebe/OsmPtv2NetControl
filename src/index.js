@@ -22,10 +22,17 @@ Changes:
 */
 /* ------------------------------------------------------------------------------------------------------------------------- */
 
+/* ------------------------------------------------------------------------------------------------------------------------- */
+/**
+ *The entry point of the app for a browser
+ */
+/* ------------------------------------------------------------------------------------------------------------------------- */
+
 import GoButtonClickEL from './GoButtonClickEL.js';
 import ErrorsOnlyButtonClickEL from './ErrorsOnlyButtonClickEL.js';
 
-// all the necessary code is inside the constructor of theThemeChanger so...
+// all the necessary code is inside the constructor of theThemeChanger so only an import
+// is needed to enable theThemeChanger
 // eslint-disable-next-line no-unused-vars
 import theThemeChanger from './ThemeChanger.js';
 

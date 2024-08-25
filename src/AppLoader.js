@@ -22,18 +22,16 @@ Changes:
 */
 /* ------------------------------------------------------------------------------------------------------------------------- */
 
-// import process from 'process';
 import theConfig from './Config.js';
 import OsmDataLoader from './OsmDataLoader.js';
-import OsmDataValidator from './OsmDataValidator.js';
 import theReport from './Report.js';
-import MissingRouteMasterValidator from './MissingRouteMasterValidator.js';
 import theOsmData from './OsmData.js';
+import OsmRouteMasterValidator from './OsmRouteMasterValidator.js';
 
 /* ------------------------------------------------------------------------------------------------------------------------- */
 /**
  * Start the app:
- * - read and validate the arguments
+ * - read and validate the arguments (nodejs) or the controls on the web page (browser)
  * - set the config
  * - remove the old files if any
  */
@@ -46,54 +44,90 @@ class AppLoader {
      * @type {String}
      */
 
-	static get #version ( ) { return 'v1.1.0'; }
+	static get #version ( ) { return 'v1.0.0'; }
+
+	/**
+	* Complete theConfig object from the web page
+	 */
+
+	#createConfigForBrowser ( ) {
+
+		theConfig.osmNetwork = document.getElementById ( 'osmNetworkInput' ).value;
+		theConfig.osmVehicle = document.getElementById ( 'osmVehicleSelect' ).value;
+		theConfig.osmType = document.getElementById ( 'osmTypeSelect' ).value;
+		theConfig.osmArea = document.getElementById ( 'osmAreaInput' ).value;
+		theConfig.osmRelation = document.getElementById ( 'osmRelationInput' ).value;
+		theConfig.engine = 'browser';
+
+		if ( '' === theConfig.osmArea ) {
+			theConfig.osmArea = '0';
+		}
+
+		theConfig.osmArea = Number.parseInt ( theConfig.osmArea );
+
+		if ( '' === theConfig.osmRelation ) {
+			theConfig.osmRelation = '0';
+		}
+		theConfig.osmRelation = Number.parseInt ( theConfig.osmRelation );
+	}
+
+	/**
+	* Complete theConfig object from the app parameters
+	 */
+
+	#createConfigForNode ( ) {
+		theConfig.appDir = process.cwd ( ) + '/node_modules/osmbus2mysql/src';
+		process.argv.forEach (
+			arg => {
+				const argContent = arg.split ( '=' );
+				switch ( argContent [ 0 ] ) {
+				case '--osmType' :
+					theConfig.osmType = argContent [ 1 ] || theConfig.osmType;
+					break;
+				case '--osmArea' :
+					theConfig.osmArea = argContent [ 1 ] || theConfig.osmArea;
+					break;
+				case '--osmRelation' :
+					theConfig.osmRelation = argContent [ 1 ] || theConfig.osmRelation;
+					break;
+				case '--osmNetwork' :
+					theConfig.osmNetwork = argContent [ 1 ] || theConfig.osmNetwork;
+					break;
+				case '--osmVehicle' :
+					theConfig.osmVehicle = argContent [ 1 ] || theConfig.osmVehicle;
+					break;
+				default :
+					break;
+				}
+			}
+		);
+
+		theConfig.appDir = process.argv [ 1 ];
+		theConfig.engine = 'nodejs';
+	}
 
 	/**
 	* Complete theConfig object from the app parameters (nodejs) or the options parameter (browser)
 	* @param {?Object} options The options for the app when the browser is used
+	* @returns {boolean} True when the config is succesfully created
 	 */
 
 	async #createConfig ( options ) {
 
-		if ( options ) {
-			theConfig.osmArea = options.osmArea;
-			theConfig.osmNetwork = options.osmNetwork;
-			theConfig.osmRelation = options.osmRelation;
-			theConfig.osmType = options.osmType;
-			theConfig.osmVehicle = options.osmVehicle;
-			theConfig.engine = 'browser';
+		if ( 'browser' === options?.engine ) {
+			this.#createConfigForBrowser ( );
 		}
 		else {
-			theConfig.appDir = process.cwd ( ) + '/node_modules/osmbus2mysql/src';
-			process.argv.forEach (
-				arg => {
-					const argContent = arg.split ( '=' );
-					switch ( argContent [ 0 ] ) {
-					case '--osmType' :
-						theConfig.osmType = argContent [ 1 ] || theConfig.osmType;
-						break;
-					case '--osmArea' :
-						theConfig.osmArea = argContent [ 1 ] || theConfig.osmArea;
-						break;
-					case '--osmRelation' :
-						theConfig.osmRelation = argContent [ 1 ] || theConfig.osmRelation;
-						break;
-					case '--osmNetwork' :
-						theConfig.osmNetwork = argContent [ 1 ] || theConfig.osmNetwork;
-						break;
-					case '--osmVehicle' :
-						theConfig.osmVehicle = argContent [ 1 ] || theConfig.osmVehicle;
-						break;
-					default :
-						break;
-					}
-				}
-			);
-
-			theConfig.appDir = process.argv [ 1 ];
-			theConfig.engine = 'nodejs';
+			this.#createConfigForNode ( );
 		}
 
+		// if osmArea is different of 0, osmArea must be 36 + osmArea with 6 digits (see Overpass-api rules)
+		if ( 0 !== theConfig.osmArea ) {
+			// eslint-disable-next-line no-magic-numbers
+			theConfig.osmArea = Number.parseInt ( '36' + String ( theConfig.osmArea ).padStart ( 8, '0' ) );
+		}
+
+		// Set the osmType to the value needed for overpass-api
 		switch ( theConfig.osmType ) {
 		case 'proposed' :
 			theConfig.osmType = 'proposed:route';
@@ -104,11 +138,12 @@ class AppLoader {
 			break;
 		default :
 			console.error ( 'Invalid osmType' );
-			process.exit ( 1 );
+			return false;
 		}
 
-		// the config is now frozen
-		// Object.freeze ( theConfig );
+		// the config is now sealed
+		Object.seal ( theConfig );
+		return true;
 	}
 
 	/**
@@ -126,25 +161,16 @@ class AppLoader {
 
 	async loadApp ( options ) {
 
-		this.#createConfig ( options );
+		if ( ! this.#createConfig ( options ) ) {
+			return;
+		}
+
 		theOsmData.clear ( );
 		theReport.open ( );
 
-		if ( 'nodejs' === theConfig.engine ) {
-			theReport.add (
-				'p',
-				'Request parameters: type = ' +
-					theConfig.osmType +
-					' - network = ' + theConfig.osmNetwork +
-					' - vehicle = ' + theConfig.osmVehicle +
-					( 0 === theConfig.osmArea ? '' : ' - area =  ' + theConfig.osmArea ) +
-					( 0 === theConfig.osmRelation ? '' : ' - relation = ' + theConfig.osmRelation ) +
-					' - ' + new Date ().toString ( )
-			);
+		if ( await new OsmDataLoader ( ).fetchData ( ) ) {
+			await new OsmRouteMasterValidator ( ).validate ( );
 		}
-		await new MissingRouteMasterValidator ( ).fetchData ( );
-		await new OsmDataLoader ( ).fetchData ( );
-		new OsmDataValidator ( ).validate ( );
 		await theReport.close ( );
 	}
 }

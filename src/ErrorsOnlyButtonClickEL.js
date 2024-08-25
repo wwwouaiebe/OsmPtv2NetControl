@@ -24,7 +24,7 @@ Changes:
 
 /* ------------------------------------------------------------------------------------------------------------------------- */
 /**
- * Coming soon
+ * Simple click event handler for the 'Show errors only' button of the web page
  */
 /* ------------------------------------------------------------------------------------------------------------------------- */
 
@@ -39,7 +39,7 @@ class ErrorsOnlyButtonClickEL {
 	}
 
 	/**
-	 * Coming soon
+	 * event handler
 	 */
 
 	handleEvent ( ) {
