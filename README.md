@@ -131,3 +131,7 @@ All questions, discussions, polemics about osm have to be posted on OSM forums a
 This program is only there to help mappers do a better map. In all case it's not a control of your works. I am not the OSM police.
 
 In case of contradictions between this app and the openstreetmap wiki, the wiki is the truth.
+
+## Technical documentation
+
+it's [there](https://wwwouaiebe.github.io/OsmPtv2NetControl/docs/techDoc/)
