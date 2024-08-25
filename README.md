@@ -4,7 +4,7 @@ A validator for OpenStreetMap bus, tram and subway route and route_master relati
 
 ## License
 
-See the LICENSE file (GNU GENERAL PUBLIC LICENSE Version 3).
+See the [LICENSE file](https://github.com/wwwouaiebe/OsmPtv2NetControl/blob/main/LICENSE) (GNU GENERAL PUBLIC LICENSE Version 3).
 
 ## Installation
 
@@ -17,15 +17,17 @@ You are a crazy developper? install nodejs, npm, the npm package osmptv2netcontr
 ## How to use 
 
 On the main web page complete:
-- the network (for BE users: 'TECL', TECX', 'TECN', 'TECB', 'TECC', 'TECH', 'IBXL', 'DLOV','DLLi'...)
+- the network (for BE users: 'TECL', TECX', 'TECN', 'TECB', 'TECC', 'TECH', 'IBXL', 'DLOV', 'DLLi'...)
 - select a vehicle in the dropdown list
 - select a type ('used' for the currently used relations, 'proposed' for the relations with 'proposed' status)
-- enter an area osm id if you will limit the control to a precise area (exemple: 1681788 for Liège, 897671 for Gent... )
+- enter an area osm id if you will limit the control to a precise area (exemple: 1681788 for Liège, 897671 for Gent...)
 - enter a route relation osm id if you will limit to one relation. In that case, it's not needed to complete the network. The route and all the routes attached to the same route_master are controlled.
 - click on the 'go' button to start the program
 - click on the 'errors button' to show only the errors or show all
 
 ## detected errors and how to solve
+
+First use your brain.
 
 ### Route wihout route_master ...
 
@@ -36,7 +38,7 @@ It's important to fix this error first because routes without route_master are n
 
 A route is attached to more than one route_master. Correct the route_masters and probably remove one of the route_master
 
-### A relation member of the route master is not a bus/tram/subway relation
+### A relation member of the route_master is not a bus/tram/subway relation
 
 A relation is present in the route_master but it's not a bus/tram/subway route. Verify the tags of this bad relation or remove it from the route_master
 
@@ -62,7 +64,7 @@ A hole is found in the ways of the bus route. Verify the order of the ways and v
 
 ### A from tag is not found for route ...
 
-A from tag is missing . Add the tag to the bus route
+A from tag is missing. Add the tag to the bus route
 
 ### The from tag is not equal to the name of the first platform for route...
 
@@ -70,7 +72,7 @@ The from tag must be equal to the name of the first platform. Correct the from t
 
 ### A to tag is not found for route ...
 
-A to tag is missing . Add the tag to the bus route
+A to tag is missing. Add the tag to the bus route
 
 ### The to tag is not equal to the name of the last platform for route ...
 
@@ -122,10 +124,10 @@ The role is not a valid role for a bus/tram/subway relation. Verify the role or 
 
 ## Bugs, issues, questions about the app
 
-Please fill an issue in Github. If it's REALLY to complex for you, send a message via my osm account (but remember that in that case I have to fill the issue for you 👿).
+Please fill an issue in Github. If it's REALLY to complex for you, send a message via [my osm account](https://www.openstreetmap.org/user/wwwouaiebe) (but remember that in that case I have to fill the issue for you 👿).
 
-All questions, discussions, polemics about osm have to be posted on OSM forums and not there.
+All questions, discussions, polemics about osm have to be posted on OSM forums and not here.
 
-This program is only there to help mappers do a better map. In all case it's not a control of your works...
+This program is only there to help mappers do a better map. In all case it's not a control of your works.I am not the OSM police.
 
 In case of contradictions between this app and the openstreetmap wiki, the wiki is the truth.
