@@ -8,9 +8,9 @@ See the [LICENSE file](https://github.com/wwwouaiebe/OsmPtv2NetControl/blob/main
 
 ## Installation
 
-You are null for program installation? Use the demo or the version installed on my [web site](https://www.ouaie.be/OsmPtv2NetControl/) 
+You are null for program installation? Use the [demo](https://wwwouaiebe.github.io/OsmPtv2NetControl/src/) or the version installed on my [web site](https://www.ouaie.be/OsmPtv2NetControl/) 
 
-You have a web server (local or on the web)? Download the last release and install the src folder on your server (you can rename the folder to what you will) and load the index.html file from your browser.
+You have a web server (local or on the web)? Download the [last release](https://github.com/wwwouaiebe/OsmPtv2NetControl/releases/tag/v1.0.0-alpha) and install the src folder on your server (you can rename the folder to what you will) and load the index.html file from your browser.
 
 You are a crazy developper? install nodejs, npm, the npm package osmptv2netcontrol and Visual Studio Code. Good luck.
 
