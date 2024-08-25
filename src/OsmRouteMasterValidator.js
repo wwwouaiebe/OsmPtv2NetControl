@@ -142,7 +142,7 @@ class OsmRouteMasterValidator {
 			theConfig.osmVehicle.substring ( 1 ) + ' ';
 		if ( routeMaster.tags.name !== vehicle + routeMaster.tags.ref ) {
 			theReport.addPError (
-				'Bad name for route_master (must be ' + vehicle + routeMaster.tags.ref + ')'
+				'Invalid name for route_master (must be ' + vehicle + routeMaster.tags.ref + ')'
 				, routeMaster.id
 			);
 		}

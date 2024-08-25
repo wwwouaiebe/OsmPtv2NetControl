@@ -28,7 +28,7 @@ import theReport from './Report.js';
 
 /* ------------------------------------------------------------------------------------------------------------------------- */
 /**
- * Coming soon
+ * Validator for osm public_transport routes
  */
 /* ------------------------------------------------------------------------------------------------------------------------- */
 
@@ -67,15 +67,16 @@ class OsmRouteValidator {
 	}
 
 	/**
-	* Verify that two ways are sharing a node at the beginning or at the end
-	 @param {Object} way Coming soon
-	 @param {Object} previousWay Coming soon
+	 * Verify that two ways are sharing a node at the beginning or at the end
+	 * @param {Object} firstWay The first way to verify
+	 * @param {Object} secondWay The second way to verify
 	 */
 
-	 #waysHaveCommonNode ( way, previousWay ) {
-		return previousWay.nodes [ 0 ] === way.nodes [ 0 ] || previousWay.nodes [ 0 ] === way.nodes.toReversed ( ) [ 0 ] ||
-		previousWay.nodes.toReversed ( ) [ 0 ] === way.nodes [ 0 ] ||
-		previousWay.nodes.toReversed ( ) [ 0 ] === way.nodes.toReversed ( ) [ 0 ];
+	 #waysHaveCommonNode ( firstWay, secondWay ) {
+		return secondWay.nodes [ 0 ] === firstWay.nodes [ 0 ] ||
+		secondWay.nodes [ 0 ] === firstWay.nodes.toReversed ( ) [ 0 ] ||
+		secondWay.nodes.toReversed ( ) [ 0 ] === firstWay.nodes [ 0 ] ||
+		secondWay.nodes.toReversed ( ) [ 0 ] === firstWay.nodes.toReversed ( ) [ 0 ];
 	}
 
 	/**

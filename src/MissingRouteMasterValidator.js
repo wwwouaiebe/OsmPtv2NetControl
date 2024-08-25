@@ -34,8 +34,8 @@ import theConfig from './Config.js';
 class MissingRouteMasterValidator {
 
 	/**
-	* Add the errors to the report
-	 @param {Array} elements Coming soon
+	 * Add the errors to the report
+	 * @param {Array} elements An erray with routes without route_master
 	 */
 
 	#reportMissingRouteMaster ( elements ) {

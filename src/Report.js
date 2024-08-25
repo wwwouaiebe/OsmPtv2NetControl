@@ -28,7 +28,8 @@ import JosmButtonClickEL from './JosmButtonClickEL.js';
 
 /* ------------------------------------------------------------------------------------------------------------------------- */
 /**
- * Coming soon
+ * This class creates an HTML file with the detected errors (when usedwith nodejs) or add the detected error to
+ * the main HTML page (when used from a browser)
  */
 /* ------------------------------------------------------------------------------------------------------------------------- */
 

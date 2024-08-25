@@ -156,7 +156,7 @@ class AppLoader {
 
 	/**
 	 * Load the app, searching all the needed infos to run the app correctly
-	 * @param {Object} options Coming soon
+	 * @param {Object} options Options for the program
 	 */
 
 	async loadApp ( options ) {

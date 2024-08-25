@@ -1,7 +1,7 @@
 {
     "type": "module",
     "name": "osmptv2netcontrol",
-    "description": "Coming soon",
+    "description": "Validator for OpenStreetMap bus, tram and subways route and route_master",
     "main": "bin/index.js",
     "bin": {
         "sd": "./src/index.js"
