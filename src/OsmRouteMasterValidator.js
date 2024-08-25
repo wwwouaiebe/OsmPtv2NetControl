@@ -179,8 +179,8 @@ class OsmRouteMasterValidator {
 			'h1',
 			'Now validating route_master ' +
             ( routeMaster.tags.name ?? '' ) + ' ' +
-            ( routeMaster.tags.description ?? '' ) +
-            ' ( ' + theReport.getOsmLink ( routeMaster ) + ' )'
+            ( routeMaster.tags.description ?? '' ) + ' ',
+			routeMaster
 		);
 
 		// validation of the route_master

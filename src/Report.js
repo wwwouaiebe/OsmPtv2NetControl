@@ -151,8 +151,14 @@ class Report {
 
 		let osmLink = osmObject ? '(' + this.getOsmLink ( osmObject ) + ')' : '';
 		if ( 'browser' === theConfig.engine ) {
+			let josmEdit = '';
+			if ( osmObject ) {
+				josmEdit = '<button title="Edit the relation with JOSM\nJOSM must be already opened!" ' +
+					'class="josmButton" data-osm-obj-id="' +
+					( osmObject.id ?? osmObject.ref ) + '" >JOSM</button>';
+			}
 			let htmlElement = document.createElement ( htmlTag );
-			htmlElement.innerHTML = text + osmLink;
+			htmlElement.innerHTML = text + osmLink + josmEdit;
 			this.#report.appendChild ( htmlElement );
 		}
 		else {

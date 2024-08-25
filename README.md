@@ -128,6 +128,6 @@ Please fill an issue in Github. If it's REALLY to complex for you, send a messag
 
 All questions, discussions, polemics about osm have to be posted on OSM forums and not here.
 
-This program is only there to help mappers do a better map. In all case it's not a control of your works.I am not the OSM police.
+This program is only there to help mappers do a better map. In all case it's not a control of your works. I am not the OSM police.
 
 In case of contradictions between this app and the openstreetmap wiki, the wiki is the truth.

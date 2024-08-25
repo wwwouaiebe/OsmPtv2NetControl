@@ -57,7 +57,7 @@ class JosmButtonClickEL {
 		)
 			.then (
 				response => {
-					console.error ( String ( response.status ) + ' ' + response.statusText );
+					console.info ( String ( response.status ) + ' ' + response.statusText );
 				}
 			)
 			.catch (
