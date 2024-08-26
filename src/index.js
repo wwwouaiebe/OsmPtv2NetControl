@@ -31,6 +31,7 @@ Changes:
 import GoButtonClickEL from './GoButtonClickEL.js';
 import ErrorsOnlyButtonClickEL from './ErrorsOnlyButtonClickEL.js';
 import AutoStartup from './AutoStartup.js';
+import theVersion from './version.js';
 
 // all the necessary code is inside the constructor of theThemeChanger so only an import
 // is needed to enable theThemeChanger
@@ -39,7 +40,7 @@ import theThemeChanger from './ThemeChanger.js';
 
 document.getElementById ( 'goInput' ).addEventListener ( 'click', new GoButtonClickEL ( ), false );
 document.getElementById ( 'errorsOnlyInput' ).addEventListener ( 'click', new ErrorsOnlyButtonClickEL ( ), false );
-
+document.getElementById ( 'version' ).innerText = 'Version: ' + theVersion;
 new AutoStartup ( ).start ( );
 
 /* --- End of file --------------------------------------------------------------------------------------------------------- */
