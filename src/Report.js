@@ -35,6 +35,11 @@ import JosmButtonClickEL from './JosmButtonClickEL.js';
 
 class Report {
 
+	/**
+	 * The help for the errors
+	 * @type {Object}
+	 */
+
 	#errorHelp = {};
 
 	/**
@@ -172,8 +177,9 @@ class Report {
 
 	/**
 	* Add an error to the report
-	* @param {String} text The text explaining the error
-	* @param {Number} osmId The osm id of the falsy object. This id is used for the JOSM button
+	 * @param {String} text The text explaining the error
+	 * @param {?Object} osmObject The falsy object. The object's id is used for the JOSM button
+	 * @param {String} errorCode. An error code. when not null the help for the error is added in the tooltip.
 	 */
 
 	addPError ( text, osmObject, errorCode ) {

@@ -68,7 +68,9 @@ A from tag is missing. Add the tag to the bus/tram/subway route
 
 ### The from tag is not equal to the name of the first platform for route...
 
-The from tag must be equal to the name of the first platform. Correct the from tag
+The from tag must be equal to the name of the first platform. Correct the from tag.
+If the platform is shared between 2 operators and have a different name for each operator the name:operator 
+is also valid
 
 ### A to tag is not found for route ...
 
@@ -76,7 +78,9 @@ A to tag is missing. Add the tag to the bus route
 
 ### The to tag is not equal to the name of the last platform for route ...
 
-The to tag must be equal to the name of the last platform. Correct the to tag
+The to tag must be equal to the name of the last platform. Correct the to tag.
+If the platform is shared between 2 operators and have a different name for each operator the name:operator 
+is also valid
 
 ### Invalid name for route ...
 

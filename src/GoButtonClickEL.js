@@ -46,6 +46,8 @@ class GoButtonClickEL {
 
 	handleEvent ( ) {
 
+		document.getElementById ( 'errorsOnlyInput' ).value = 'Errors only';
+
 		new AppLoader ( ).loadApp ( { engine : 'browser' } );
 	}
 }

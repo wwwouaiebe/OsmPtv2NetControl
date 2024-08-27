@@ -180,13 +180,15 @@ class OsmRouteValidator {
 				'R002'
 			);
 		}
-		else if ( this.#route?.tags?.from !== this.#platforms[ 0 ]?.tags?.name ) {
+		else if (
+			this.#route?.tags?.from !== this.#platforms[ 0 ]?.tags?.name
+			&&
+			this.#route?.tags?.from !== ( this.#platforms [ 0 ]?.tags [ 'name:' + this.#route?.tags?.operator ] ?? '' )
+		) {
 
 			// from tag is not the same than the name of the first platform
 			theReport.addPError (
-				'The from tag ( ' + this.#route?.tags?.from +
-				' ) is not equal to the name of the first platform ( ' +
-				this.#platforms[ 0 ]?.tags?.name + ' ) for route ',
+				'The from tag is not equal to the name of the first platform for route ',
 				null,
 				'R003'
 			);
@@ -207,13 +209,19 @@ class OsmRouteValidator {
 				'R004'
 			);
 		}
-		else if ( this.#route?.tags?.to !== this.#platforms.toReversed ( )[ 0 ]?.tags?.name ) {
+		else if (
+			this.#route?.tags?.to !== this.#platforms.toReversed ( )[ 0 ]?.tags?.name
+			&&
+			(
+				this.#route?.tags?.to
+				!==
+				( this.#platforms.toReversed ( ) [ 0 ]?.tags [ 'name:' + this.#route?.tags?.operator ] ?? '' )
+			)
+		) {
 
 			// to tag is not the same than the name of the last platform
 			theReport.addPError (
-				'The to tag ( ' + this.#route?.tags?.to +
-				' ) is not equal to the name of the last platform ( ' +
-				this.#platforms.toReversed ( )[ 0 ]?.tags?.name + ' ) for route',
+				'The to tag is not equal to the name of the last platform for route',
 				null,
 				'R005'
 			);

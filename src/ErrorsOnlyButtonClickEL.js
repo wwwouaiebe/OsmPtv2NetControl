@@ -30,6 +30,11 @@ Changes:
 
 class ErrorsOnlyButtonClickEL {
 
+	/**
+	 * The initial value for the error button
+	 * @type {String}
+	 */
+
 	#buttonValue = 'Errors only';
 
 	/**
@@ -42,10 +47,11 @@ class ErrorsOnlyButtonClickEL {
 
 	/**
 	 * event handler
+	 * @param {Object} event The event to handle
 	 */
 
 	handleEvent ( event ) {
-		event.target.value = 'All' === event.target.value ? 'Error only'  : 'All';
+		event.target.value = 'All' === event.target.value ? 'Error only' : 'All';
 		report.classList.toggle ( 'errorsOnly' );
 		let showH1H2 = report.classList.contains ( 'errorsOnly' );
 		let previousH1 = null;

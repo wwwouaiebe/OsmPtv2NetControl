@@ -2,9 +2,9 @@
 export const errorHelp = {
 	R001 : 'A hole is found in the ways of the bus route. Verify the order of the ways and verify if a way is not missing',
 	R002 : 'A from tag is missing. Add the tag to the bus/tram/subway route',
-	R003 : 'The from tag must be equal to the name of the first platform. Correct the from tag',
+	R003 : 'The from tag must be equal to the name of the first platform. Correct the from tag.If the platform is shared between 2 operators and have a different name for each operator the name:operator is also valid',
 	R004 : 'A to tag is missing. Add the tag to the bus route',
-	R005 : 'The to tag must be equal to the name of the last platform. Correct the to tag',
+	R005 : 'The to tag must be equal to the name of the last platform. Correct the to tag. If the platform is shared between 2 operators and have a different name for each operator the name:operator is also valid',
 	R006 : 'The name of a route must be \'Bus \' + the ref tag of the route + \': \' + the from tag of the route + \' → \' + the to tag of the route',
 	R007 : 'A tag \'name\', \'from\', \'to\' or \'ref\' is missing',
 	R008 : 'Reorder the objects in the bus route. Platform and stop must be before the ways in the route relation',
