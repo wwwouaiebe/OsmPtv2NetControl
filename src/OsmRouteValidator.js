@@ -118,7 +118,8 @@ class OsmRouteValidator {
 							'Hole found for route ' + theReport.getOsmLink ( this.#route ) +
                             ' between way id ' + theReport.getOsmLink ( previousWay ) +
                             ' and way id ' + theReport.getOsmLink ( way ),
-							this.#route.id
+							null,
+							'R001'
 						);
 						previousWay = null;
 					}
@@ -126,6 +127,42 @@ class OsmRouteValidator {
 				previousWay = way;
 			}
 		);
+	}
+
+	/**
+	* Validate the operator tag
+	 */
+
+	#validateOperator ( ) {
+		if ( this.#route?.tags?.operator ) {
+			let operators = this.#route?.tags?.operator.split ( ';' );
+			const validOperators = [ 'TEC', 'De lijn', 'STIB/MIVB' ];
+			let validOperatorFound = false;
+			operators.forEach (
+				operator => {
+					if ( -1 !== validOperators.indexOf ( operator ) ) {
+						validOperatorFound = true;
+					}
+				}
+			);
+			if ( ! validOperatorFound ) {
+				theReport.addPError (
+					'The operator is not valid for route',
+					null,
+					'R018'
+				);
+
+			}
+		}
+		else {
+
+			// no operator tag
+			theReport.addPError (
+				'An operator tag is not found for route',
+				null,
+				'R002'
+			);
+		}
 	}
 
 	/**
@@ -138,8 +175,9 @@ class OsmRouteValidator {
 
 			// no from tag
 			theReport.addPError (
-				'A from tag is not found for route ' + theReport.getOsmLink ( this.#route ),
-				this.#route.id
+				'A from tag is not found for route',
+				null,
+				'R002'
 			);
 		}
 		else if ( this.#route?.tags?.from !== this.#platforms[ 0 ]?.tags?.name ) {
@@ -148,8 +186,9 @@ class OsmRouteValidator {
 			theReport.addPError (
 				'The from tag ( ' + this.#route?.tags?.from +
 				' ) is not equal to the name of the first platform ( ' +
-				this.#platforms[ 0 ]?.tags?.name + ' ) for route ' + theReport.getOsmLink ( this.#route ),
-				this.#route.id
+				this.#platforms[ 0 ]?.tags?.name + ' ) for route ',
+				null,
+				'R003'
 			);
 		}
 	}
@@ -163,8 +202,9 @@ class OsmRouteValidator {
 
 			// no to tag
 			theReport.addPError (
-				'A to tag is not found for route ' + theReport.getOsmLink ( this.#route ),
-				this.#route.id
+				'A to tag is not found for route',
+				null,
+				'R004'
 			);
 		}
 		else if ( this.#route?.tags?.to !== this.#platforms.toReversed ( )[ 0 ]?.tags?.name ) {
@@ -173,8 +213,9 @@ class OsmRouteValidator {
 			theReport.addPError (
 				'The to tag ( ' + this.#route?.tags?.to +
 				' ) is not equal to the name of the last platform ( ' +
-				this.#platforms.toReversed ( )[ 0 ]?.tags?.name + ' ) for route ' + theReport.getOsmLink ( this.#route ),
-				this.#route.id
+				this.#platforms.toReversed ( )[ 0 ]?.tags?.name + ' ) for route',
+				null,
+				'R005'
 			);
 		}
 	}
@@ -198,16 +239,17 @@ class OsmRouteValidator {
 			let goodName = vehicle + this.#route?.tags?.ref + ': ' + this.#route?.tags?.from + ' → ' + this.#route?.tags?.to;
 			if ( this.#route?.tags?.name !== goodName ) {
 				theReport.addPError (
-					'Invalid name ("' + this.#route?.tags?.name + '" but expected "' + goodName + '") for route ' +
-					theReport.getOsmLink ( this.#route ),
-					this.#route.id
+					'Invalid name ("' + this.#route?.tags?.name + '" but expected "' + goodName + '") for route ',
+					null,
+					'R006'
 				);
 			}
 		}
 		else {
 			theReport.addPError (
-				'Missing from, to, ref or name tags for route ' + theReport.getOsmLink ( this.#route ),
-				this.#route.id
+				'Missing from, to, ref or name tags for route',
+				null,
+				'R007'
 			);
 		}
 	}
@@ -227,8 +269,9 @@ class OsmRouteValidator {
 				else if ( emptyRole && '' !== member.role ) {
 					theReport.addPError (
 						'An unordered object with a role (' + theReport.getOsmLink ( member ) +
-                                ') is found in the ways of route ' + theReport.getOsmLink ( this.#route ),
-						this.#route.id
+                                ') is found in the ways of route ',
+						null,
+						'R008'
 					);
 				}
 			}
@@ -251,8 +294,9 @@ class OsmRouteValidator {
 			if ( 'bus_stop' !== busStop?.tags?.highway ) {
 				theReport.addPError (
 					'An invalid node (' + theReport.getOsmLink ( member ) +
-						') is used as platform for the route ' + theReport.getOsmLink ( this.#route ),
-					this.#route.id
+						') is used as platform for the route',
+					null,
+					'R009'
 				);
 			}
 		}
@@ -266,8 +310,9 @@ class OsmRouteValidator {
 			) {
 				theReport.addPError (
 					'An invalid way (' + theReport.getOsmLink ( member ) +
-						') is used as platform for the route ' + theReport.getOsmLink ( this.#route ),
-					this.#route.id
+						') is used as platform for the route',
+					null,
+					'R010'
 				);
 			}
 		}
@@ -285,16 +330,18 @@ class OsmRouteValidator {
 			if ( 'stop_position' !== stopPosition?.tags?.public_transport ) {
 				theReport.addPError (
 					'An invalid node (' + theReport.getOsmLink ( member ) +
-						') is used as stop_position for the route ' + theReport.getOsmLink ( this.#route ),
-					this.#route.id
+						') is used as stop_position for the route',
+					null,
+					'R011'
 				);
 			}
 		}
 		else {
 			theReport.addPError (
 				'An invalid object (' + theReport.getOsmLink ( member ) +
-					') is used as stop_position for the route ' + theReport.getOsmLink ( this.#route ),
-				this.#route.id
+					') is used as stop_position for the route',
+				null,
+				'R012'
 			);
 		}
 	}
@@ -334,8 +381,9 @@ class OsmRouteValidator {
 	   ) {
 		   theReport.addPError (
 			   'An invalid highway (' + theReport.getOsmLink ( way ) +
-				   ') is used as way for the route ' + theReport.getOsmLink ( this.#route ),
-			   this.#route.id
+				   ') is used as way for the route',
+			   null,
+			   'R013'
 		   );
 	   }
 	   else {
@@ -354,8 +402,9 @@ class OsmRouteValidator {
 		if ( 'tram' !== way?.tags?.railway ) {
 			theReport.addPError (
 				'An invalid railway (' + theReport.getOsmLink ( way ) +
-					') is used as way for the route ' + theReport.getOsmLink ( this.#route ),
-				this.#route.id
+					') is used as way for the route',
+				null,
+				'R014'
 			);
 		}
 
@@ -371,8 +420,9 @@ class OsmRouteValidator {
 		if ( 'subway' !== way?.tags?.railway ) {
 			theReport.addPError (
 				'An invalid railway (' + theReport.getOsmLink ( way ) +
-					') is used as way for the route ' + theReport.getOsmLink ( this.#route ),
-				this.#route.id
+					') is used as way for the route',
+				null,
+				'R014'
 			);
 		}
 	}
@@ -402,8 +452,9 @@ class OsmRouteValidator {
 		else {
 			theReport.addPError (
 				'An invalid object (' + theReport.getOsmLink ( member ) +
-					') is used as way for the route ' + theReport.getOsmLink ( this.#route ),
-				this.#route.id
+					') is used as way for the route',
+				null,
+				'R015'
 			);
 		}
 	}
@@ -431,9 +482,9 @@ class OsmRouteValidator {
 				default :
 					theReport.addPError (
 						'An unknow role (' + member.role +
-                            ') is found in the route ' + theReport.getOsmLink ( this.#route ) +
-                            ' for the osm object ' + theReport.getOsmLink ( member ),
-						this.#route.id
+                            ') is found in the route for the osm object ' + theReport.getOsmLink ( member ),
+						null,
+						'R016'
 					);
 					break;
 				}
@@ -459,6 +510,7 @@ class OsmRouteValidator {
 		// validation
 		this.#platforms = [];
 		this.#ways = [];
+		this.#validateOperator ( );
 		this.#validateRolesObjects ( );
 		this.#validateRolesOrder ( );
 		this.#validateWaysOrder ( );

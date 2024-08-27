@@ -50,7 +50,8 @@ class MissingRouteMasterValidator {
 			element => {
 				theReport.addPError (
 					'Route wihout route_master ' + theReport.getOsmLink ( element ),
-					element.id
+					element,
+					'M001'
 				);
 			}
 		);

@@ -60,11 +60,11 @@ The name must be 'Bus ' or 'Tram ' or 'Subway' + the value of the ref tag
 
 ### Hole found for route ... between way id ... and way id ...
 
-A hole is found in the ways of the bus route. Verify the order of the ways and verify if a way is not missing.
+A hole is found in the ways of the bus/tram/subway route. Verify the order of the ways and verify if a way is not missing.
 
 ### A from tag is not found for route ...
 
-A from tag is missing. Add the tag to the bus route
+A from tag is missing. Add the tag to the bus/tram/subway route
 
 ### The from tag is not equal to the name of the first platform for route...
 
