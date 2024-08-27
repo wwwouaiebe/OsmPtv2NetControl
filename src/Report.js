@@ -36,6 +36,13 @@ import JosmButtonClickEL from './JosmButtonClickEL.js';
 class Report {
 
 	/**
+	 * The help for the errors
+	 * @type {Object}
+	 */
+
+	#errorHelp = {};
+
+	/**
 	* The report. A string for nodejs or an HTMLElement for browser
 	* @type {String|HTMLElement}
 	 */
@@ -62,8 +69,10 @@ class Report {
 	 * - for nodejs : add the html header as text to the report and add a line withe user's request
 	 */
 
-	open ( ) {
+	async open ( ) {
 		this.#errorCounter = 0;
+
+		this.#errorHelp = ( await import ( './ErrorsHelpEN.js' ) ).errorHelp;
 		if ( 'browser' === theConfig.engine ) {
 			this.#report = document.getElementById ( 'report' );
 			while ( this.#report.firstChild ) {
@@ -168,25 +177,43 @@ class Report {
 
 	/**
 	* Add an error to the report
-	* @param {String} text The text explaining the error
-	* @param {Number} osmId The osm id of the falsy object. This id is used for the JOSM button
+	 * @param {String} text The text explaining the error
+	 * @param {?Object} osmObject The falsy object. The object's id is used for the JOSM button
+	 * @param {String} errorCode. An error code. when not null the help for the error is added in the tooltip.
 	 */
 
-	addPError ( text, osmId ) {
+	addPError ( text, osmObject, errorCode ) {
 
 		if ( 'browser' === theConfig.engine ) {
-			let josmEdit = '<button title="Edit the relation with JOSM\nJOSM must be already opened!" ' +
-			'class="josmButton" data-osm-obj-id="' +
-			osmId + '" >JOSM </button>';
+			let josmEdit = '';
+			if ( osmObject ) {
+				josmEdit = '<button title="Edit the relation with JOSM\nJOSM must be already opened!" ' +
+					'class="josmButton" data-osm-obj-id="' +
+					osmObject.id + '" >JOSM </button>';
+			}
 			let htmlElement = document.createElement ( 'p' );
 			htmlElement.classList.add ( 'error' );
+			if ( errorCode ) {
+				let title = this.#errorHelp [ errorCode ] + '\n';
+
+				/*
+				for ( const property in osmObject.tags ) {
+					title += '\n' + property + '=' + osmObject.tags [ property ];
+				}
+				*/
+
+				htmlElement.title = title;
+			}
 			htmlElement.innerHTML = text + josmEdit;
 			this.#report.appendChild ( htmlElement );
 		}
 		else {
-			let josmEdit = ' ( <a class ="josmedit" target="_blank" ' +
-			'href="http://localhost:8111/load_object?new_layer=true&relation_members=true&objects=r' + osmId +
-			'">Edit with JOSM</a> )';
+			let josmEdit = '';
+			if ( osmObject ) {
+				josmEdit = ' ( <a class ="josmedit" target="_blank" ' +
+					'href="http://localhost:8111/load_object?new_layer=true&relation_members=true&objects=r' + osmObject.id +
+					'">Edit with JOSM</a> )';
+			}
 			this.#report += '       <p class="error">' + text + josmEdit + '</p>\n';
 		}
 

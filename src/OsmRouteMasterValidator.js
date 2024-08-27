@@ -59,7 +59,7 @@ class OsmRouteMasterValidator {
 						}
 					);
 					text += ') routes:' + theReport.getOsmLink ( route );
-					theReport.addPError ( text, route.id );
+					theReport.addPError ( text, route, 'M002' );
 				}
 			}
 
@@ -81,13 +81,18 @@ class OsmRouteMasterValidator {
 					if ( ! route ) {
 						theReport.addPError (
 							'A relation member of the route master is not a ' +
-                            theConfig.osmVehicle + ' relation' );
+                            theConfig.osmVehicle + ' relation',
+							routeMaster,
+							'M003'
+					 );
 					}
 				}
 				else {
 					theReport.addPError (
 						'A member of the route master is not a relation (' +
-                        member.type + ' ' + member.ref + ' )'
+                        member.type + ' ' + member.ref + ' )',
+						routeMaster,
+						'M004'
 					);
 				}
 			}
@@ -102,7 +107,9 @@ class OsmRouteMasterValidator {
 	#validateRefTag ( routeMaster ) {
 		if ( ! routeMaster?.tags?.ref ) {
 			theReport.addPError (
-				'Route_master without ref tag ', routeMaster.id
+				'Route_master without ref tag ',
+				 routeMaster,
+				 'M005'
 			);
 		}
 	}
@@ -123,7 +130,8 @@ class OsmRouteMasterValidator {
 							theReport.addPError (
 								'ref tag of the route master (' + routeMaster.tags.ref +
 								') is not the same than the ref tag of the route (' + route.tags.ref + ')',
-								routeMaster.id
+								routeMaster,
+								'M006'
 							);
 						}
 					}
@@ -143,7 +151,8 @@ class OsmRouteMasterValidator {
 		if ( routeMaster.tags.name !== vehicle + routeMaster.tags.ref ) {
 			theReport.addPError (
 				'Invalid name for route_master (must be ' + vehicle + routeMaster.tags.ref + ')'
-				, routeMaster.id
+				, routeMaster,
+				'M007'
 			);
 		}
 

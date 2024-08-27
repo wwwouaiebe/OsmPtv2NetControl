@@ -22,36 +22,13 @@ Changes:
 */
 /* ------------------------------------------------------------------------------------------------------------------------- */
 
-import AppLoader from './AppLoader.js';
-
-/* ------------------------------------------------------------------------------------------------------------------------- */
 /**
- * Simple event handler for click on the go button of the web page
+ * The version number
+ * @type {String}
  */
-/* ------------------------------------------------------------------------------------------------------------------------- */
 
-class GoButtonClickEL {
+const theVersion = '1.0.0-beta';
 
-	/**
-	 * The contructor
-	 */
-
-	constructor ( ) {
-		Object.freeze ( this );
-	}
-
-	/**
-	 * Event handler
-	 */
-
-	handleEvent ( ) {
-
-		document.getElementById ( 'errorsOnlyInput' ).value = 'Errors only';
-
-		new AppLoader ( ).loadApp ( { engine : 'browser' } );
-	}
-}
-
-export default GoButtonClickEL;
+export default theVersion;
 
 /* --- End of file --------------------------------------------------------------------------------------------------------- */

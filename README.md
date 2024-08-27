@@ -25,6 +25,18 @@ On the main web page complete:
 - click on the 'go' button to start the program
 - click on the 'errors button' to show only the errors or show all
 
+## URL parameters
+
+You can call the web page with some parameters, so the controls on the web page are completed with your favorite data.
+- network : the network to control
+- vehicle : the vehicle to control. Possible values : bus tram or subway
+- type : the type of the relations. Possible value : used or proposed
+- area : the area. Must be a number
+- autostartup : when true or yes, the control start directly
+
+Sample:
+https://example.com/OsmPtv2NetControl?network=IBXL&vehicle=tram&type=used
+
 ## detected errors and how to solve
 
 First use your brain.
@@ -60,15 +72,17 @@ The name must be 'Bus ' or 'Tram ' or 'Subway' + the value of the ref tag
 
 ### Hole found for route ... between way id ... and way id ...
 
-A hole is found in the ways of the bus route. Verify the order of the ways and verify if a way is not missing.
+A hole is found in the ways of the bus/tram/subway route. Verify the order of the ways and verify if a way is not missing.
 
 ### A from tag is not found for route ...
 
-A from tag is missing. Add the tag to the bus route
+A from tag is missing. Add the tag to the bus/tram/subway route
 
 ### The from tag is not equal to the name of the first platform for route...
 
-The from tag must be equal to the name of the first platform. Correct the from tag
+The from tag must be equal to the name of the first platform. Correct the from tag.
+If the platform is shared between 2 operators and have a different name for each operator the name:operator 
+is also valid
 
 ### A to tag is not found for route ...
 
@@ -76,7 +90,9 @@ A to tag is missing. Add the tag to the bus route
 
 ### The to tag is not equal to the name of the last platform for route ...
 
-The to tag must be equal to the name of the last platform. Correct the to tag
+The to tag must be equal to the name of the last platform. Correct the to tag.
+If the platform is shared between 2 operators and have a different name for each operator the name:operator 
+is also valid
 
 ### Invalid name for route ...
 

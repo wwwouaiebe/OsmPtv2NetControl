@@ -40,13 +40,6 @@ import OsmRouteMasterValidator from './OsmRouteMasterValidator.js';
 class AppLoader {
 
 	/**
-     * The version number
-     * @type {String}
-     */
-
-	static get #version ( ) { return 'v1.0.0'; }
-
-	/**
 	* Complete theConfig object from the web page
 	 */
 

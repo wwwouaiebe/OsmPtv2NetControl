@@ -31,6 +31,13 @@ Changes:
 class ErrorsOnlyButtonClickEL {
 
 	/**
+	 * The initial value for the error button
+	 * @type {String}
+	 */
+
+	#buttonValue = 'Errors only';
+
+	/**
 	 * The contructor
 	 */
 
@@ -40,10 +47,48 @@ class ErrorsOnlyButtonClickEL {
 
 	/**
 	 * event handler
+	 * @param {Object} event The event to handle
 	 */
 
-	handleEvent ( ) {
+	handleEvent ( event ) {
+		event.target.value = 'All' === event.target.value ? 'Error only' : 'All';
 		report.classList.toggle ( 'errorsOnly' );
+		let showH1H2 = report.classList.contains ( 'errorsOnly' );
+		let previousH1 = null;
+		let previousH2 = null;
+		report.childNodes.forEach (
+			node => {
+				switch ( node.tagName ) {
+				case 'H1' :
+					previousH1 = node;
+					break;
+				case 'H2' :
+					previousH2 = node;
+					break;
+				case 'P' :
+					if ( previousH1 ) {
+						if ( showH1H2 ) {
+							previousH1.classList.add ( 'showOnError' );
+						}
+						else {
+							previousH1.classList.remove ( 'showOnError' );
+						}
+					}
+					if ( previousH2 ) {
+						if ( showH1H2 ) {
+							previousH2.classList.add ( 'showOnError' );
+						}
+						else {
+							previousH2.classList.remove ( 'showOnError' );
+						}
+					}
+					break;
+				default :
+					break;
+				}
+			}
+		);
+		report.firstChild.classList.add ( 'showOnError' );
 	}
 
 }
