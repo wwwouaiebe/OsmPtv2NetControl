@@ -25,6 +25,18 @@ On the main web page complete:
 - click on the 'go' button to start the program
 - click on the 'errors button' to show only the errors or show all
 
+## URL parameters
+
+You can call the web page with some parameters, so the controls on the web page are completed with your favorite data.
+- network : the network to control
+- vehicle : the vehicle to control. Possible values : bus tram or subway
+- type : the type of the relations. Possible value : used or proposed
+- area : the area. Must be a number
+- autostartup : when true or yes, the control start directly
+
+Sample:
+https://example.com/OsmPtv2NetControl?network=IBXL&vehicle=tram&type=used
+
 ## detected errors and how to solve
 
 First use your brain.
