@@ -218,8 +218,21 @@ class OsmRouteMasterValidator {
 		// Sorting the route_masters
 		routeMasterArray.sort (
 			( first, second ) => {
-				let result = String ( first.tags.ref ).padStart ( 5, ' ' )
-					.localeCompare ( String ( second.tags.ref ).padStart ( 5, ' ' ) );
+
+				// split the name into the numeric part and the alphanumeric part:
+				// numeric part
+				let firstPrefix = String ( Number.parseInt ( first.tags.ref ) );
+				let secondPrefix = String ( Number.parseInt ( second.tags.ref ) );
+
+				// alpha numeric part
+				let firstPostfix = first.tags.ref.replace ( firstPrefix, '' );
+				let secondPostfix = second.tags.ref.replace ( secondPrefix, '' );
+
+				// complete the numeric part with spaces on the left and compare
+				let result =
+					( firstPrefix.padStart ( 5, ' ' ) + firstPostfix )
+						.localeCompare ( secondPrefix.padStart ( 5, ' ' ) + secondPostfix );
+
 				return result;
 			}
 		);
