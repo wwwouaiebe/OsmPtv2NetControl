@@ -138,6 +138,14 @@ A node or a relation is used as way for the bus route. Verify the role of the ob
 
 The role is not a valid role for a bus/tram/subway relation. Verify the role or remove the object. Valid roles are 'platform', 'platform_entry_only', 'platform_exit_only' and 'stop'
 
+### No public_transport:version tag for this route
+
+The route don't have a public_transport:version tag. Add it
+
+### public_transport:version is not equal to 2 for this route
+
+The value of the 'public_transport:version' tag is not equal to 2. Change the value
+
 ## Bugs, issues, questions about the app
 
 Please fill an issue in Github. If it's REALLY to complex for you, send a message via [my osm account](https://www.openstreetmap.org/user/wwwouaiebe) (but remember that in that case I have to fill the issue for you 👿).

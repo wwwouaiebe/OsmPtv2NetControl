@@ -18,6 +18,8 @@ export const errorHelp = {
 	R016 : 'The role is not a valid role for a bus/tram/subway relation. Verify the role or remove the object. Valid roles are \'platform\', \'platform_entry_only\', \'platform_exit_only\' and \'stop\'',
 	R017 : 'An operator tag is not found for the route. Add the operator tag',
 	R018 : 'The operator is not valid for route. Correct the operator',
+	R019 : 'Add a \'public_transport:version\' tag to this route',
+	R020 : 'change the \'public_transport:version\' value to 2',
 	M001 : 'A route is not attached to a route_master. Search or create the route_master and add the route',
 	M002 : 'A route is attached to more than one route_master. Correct the route_masters and probably remove one of the route_master',
 	M003 : 'A relation is present in the route_master but it\'s not a bus/tram/subway route. Verify the tags of this bad relation or remove it from the route_master',
