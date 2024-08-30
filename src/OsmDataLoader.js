@@ -47,10 +47,12 @@ class OsmDataLoader {
 					switch ( element.tags.type ) {
 					case 'route_master' :
 					case 'proposed:route_master' :
+					case 'disused:route_master' :
 						theOsmData.routeMasters.set ( element.id, element );
 						break;
 					case 'route' :
 					case 'proposed:route' :
+					case 'disused:route' :
 						element.routeMasters = [];
 						theOsmData.routes.set ( element.id, element );
 						break;

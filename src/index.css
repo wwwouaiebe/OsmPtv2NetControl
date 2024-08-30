@@ -91,6 +91,7 @@ header {
 	border-bottom-style: solid ;
 	border-bottom-width: 0.1em;
 	text-align: center;
+	z-index: 500;
 }
 footer {
 	border-top-style: solid ;

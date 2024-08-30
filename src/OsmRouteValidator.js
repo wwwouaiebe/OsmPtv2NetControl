@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 /*
 Copyright - 2024 - wwwouaiebe - Contact: https://www.ouaie.be/
 
@@ -501,6 +502,41 @@ class OsmRouteValidator {
 	}
 
 	/**
+	 * Verify that a public_transport:version=2 tag is present
+	 */
+
+	#validatePtv2 ( ) {
+		if ( ! this.#route.tags [ 'public_transport:version' ] ) {
+			theReport.addPError (
+				'No public_transport:version tag for this route',
+				null,
+				'R019'
+			);
+		}
+		else if ( '2' !== this.#route.tags [ 'public_transport:version' ] ) {
+			theReport.addPError (
+				'public_transport:version is not equal to 2 for this route',
+				null,
+				'R020'
+			);
+		}
+	}
+
+	/**
+	 * Search the fixme and add it to the report
+	 */
+
+	#searchFixme ( ) {
+		if ( this.#route.tags?.fixme ) {
+			theReport.addPError (
+				'A fixme exists for this relation (' + this.#route.tags?.fixme + ')',
+				null,
+				'R021'
+			);
+		}
+	}
+
+	/**
 	 * Validate a route
      * @param { Object } route The route to validate
 	 */
@@ -518,6 +554,7 @@ class OsmRouteValidator {
 		// validation
 		this.#platforms = [];
 		this.#ways = [];
+		this.#validatePtv2 ( );
 		this.#validateOperator ( );
 		this.#validateRolesObjects ( );
 		this.#validateRolesOrder ( );
@@ -525,6 +562,7 @@ class OsmRouteValidator {
 		this.#validateFrom ( );
 		this.#validateTo ( );
 		this.#validateName ( );
+		this.#searchFixme ( );
 	}
 
  	/**

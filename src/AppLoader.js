@@ -122,6 +122,9 @@ class AppLoader {
 
 		// Set the osmType to the value needed for overpass-api
 		switch ( theConfig.osmType ) {
+		case 'disused' :
+			theConfig.osmType = 'disused:route';
+			break;
 		case 'proposed' :
 			theConfig.osmType = 'proposed:route';
 			break;
