@@ -523,6 +523,20 @@ class OsmRouteValidator {
 	}
 
 	/**
+	 * Search the fixme and add it to the report
+	 */
+
+	#searchFixme ( ) {
+		if ( this.#route.tags?.fixme ) {
+			theReport.addPError (
+				'A fixme exists for this relation (' + this.#route.tags?.fixme + ')',
+				null,
+				'R021'
+			);
+		}
+	}
+
+	/**
 	 * Validate a route
      * @param { Object } route The route to validate
 	 */
@@ -548,6 +562,7 @@ class OsmRouteValidator {
 		this.#validateFrom ( );
 		this.#validateTo ( );
 		this.#validateName ( );
+		this.#searchFixme ( );
 	}
 
  	/**

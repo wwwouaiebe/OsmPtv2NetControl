@@ -177,6 +177,21 @@ class OsmRouteMasterValidator {
 	}
 
 	/**
+	 * Search the fixme and add it to the report
+	 * @param {Object} routeMaster The route_master to verify
+	 */
+
+	#searchFixme ( routeMaster ) {
+		if ( routeMaster.tags?.fixme ) {
+			theReport.addPError (
+				'A fixme exists for this relation (' + routeMaster.tags?.fixme + ')',
+				null,
+				'R021'
+			);
+		}
+	}
+
+	/**
 	 * validate completely a route_master
 	 * @param {Object} routeMaster The route_master to verify
 	 */
@@ -197,6 +212,7 @@ class OsmRouteMasterValidator {
 		this.#validateRefTag ( routeMaster );
 		this.#validateSameRefTag ( routeMaster );
 		this.#validateName ( routeMaster );
+		this.#searchFixme ( routeMaster );
 		this.#validateRoutes ( routeMaster );
 	}
 
