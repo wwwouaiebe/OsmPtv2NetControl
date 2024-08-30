@@ -39,7 +39,7 @@ class Config {
 	appDir;
 
 	/**
-	 * The type of routes to be analysed ('route' or 'proposed:route')
+	 * The type of routes to be analysed ('route' or 'proposed:route' or 'disused:route')
 	 * @type {string}
 	 */
 

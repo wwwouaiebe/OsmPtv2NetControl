@@ -57,8 +57,8 @@ class AutoStartup {
 			return;
 		}
 
-		if ( -1 === [ 'used', 'proposed' ].indexOf ( type ) ) {
-			alert ( 'bad value for type parameter. Must be bus used or proposed' );
+		if ( -1 === [ 'used', 'proposed', 'disused' ].indexOf ( type ) ) {
+			alert ( 'bad value for type parameter. Must be bus used, proposed or disused' );
 			return;
 		}
 
