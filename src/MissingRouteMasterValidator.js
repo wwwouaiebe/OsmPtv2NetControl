@@ -76,7 +76,7 @@ class MissingRouteMasterValidator {
 			uriArea +
 			'["network"="' + theConfig.osmNetwork + '"]' +
 			'["type"="' + theConfig.osmType + '"]' +
-			'["route"="' + theConfig.osmVehicle + '"]' +
+			'["' + theConfig.osmType + '"="' + theConfig.osmVehicle + '"]' +
 			'->.all;' +
 			'rel["' + theConfig.osmType + '_master"="' + theConfig.osmVehicle + '"]' +
 			'(br.all);rel["' + theConfig.osmType + '"="' + theConfig.osmVehicle + '"]' +
