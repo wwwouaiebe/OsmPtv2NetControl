@@ -27,6 +27,7 @@ import theConfig from './Config.js';
 import theReport from './Report.js';
 import OsmRouteValidator from './OsmRouteValidator.js';
 import MissingRouteMasterValidator from './MissingRouteMasterValidator.js';
+import TagsValidator from './TagsValidator.js';
 
 /* ------------------------------------------------------------------------------------------------------------------------- */
 /**
@@ -35,6 +36,51 @@ import MissingRouteMasterValidator from './MissingRouteMasterValidator.js';
 /* ------------------------------------------------------------------------------------------------------------------------- */
 
 class OsmRouteMasterValidator {
+
+	/**
+     * Mandatory tags for TECL proposed:routes
+     * @type {Object}
+     */
+
+	#mandatoryTeclTags = {
+		description : '*',
+		name : '*',
+		network : 'TECL',
+		'network:wikidata' : 'Q3512078',
+		'network:wikipedia' : 'fr:TEC Liège-Verviers',
+		operator : 'TEC',
+		'operator:wikidata' : 'Q366922',
+		'operator:wikipedia' : 'fr:Opérateur de transport de Wallonie',
+		ref : '*',
+		'ref:TEC' : '*',
+		'proposed:route_master' : 'bus',
+		type : 'proposed:route_master',
+		note : 'This relation is a part of the new bus network starting january 2025',
+		// eslint-disable-next-line camelcase
+		opening_date : '2025-01'
+	};
+
+	/**
+     * Mandatory tags for all routes
+     * @type {Object}
+     */
+
+	#mandatoryTags = {
+		name : '*',
+		network : '*',
+		operator : '*',
+		ref : '*',
+		// eslint-disable-next-line camelcase
+		route_master : '*',
+		type : 'route_master'
+	};
+
+	/**
+     * the used tags
+     * @type {Object}
+     */
+
+	#tags;
 
 	/**
 	 * An OsmRouteValidator object
@@ -208,8 +254,14 @@ class OsmRouteMasterValidator {
 		);
 
 		// validation of the route_master
+		this.#tags =
+            'TECL' === theConfig.osmNetwork && 'proposed:route' === theConfig.osmType
+            	?
+            	this.#mandatoryTeclTags
+            	:
+            	this.#mandatoryTags;
+		new TagsValidator ( routeMaster, this.#tags ).validate ( );
 		this.#validateMembers ( routeMaster );
-		this.#validateRefTag ( routeMaster );
 		this.#validateSameRefTag ( routeMaster );
 		this.#validateName ( routeMaster );
 		this.#searchFixme ( routeMaster );
