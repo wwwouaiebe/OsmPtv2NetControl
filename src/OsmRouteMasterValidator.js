@@ -293,8 +293,8 @@ class OsmRouteMasterValidator {
 				let secondPrefix = String ( Number.parseInt ( second.tags.ref ) );
 
 				// alpha numeric part
-				let firstPostfix = first.tags.ref.replace ( firstPrefix, '' );
-				let secondPostfix = second.tags.ref.replace ( secondPrefix, '' );
+				let firstPostfix = ( first.tags.ref ?? '' ).replace ( firstPrefix, '' );
+				let secondPostfix = ( second.tags.ref ?? '' ).replace ( secondPrefix, '' );
 
 				// complete the numeric part with spaces on the left and compare
 				let result =

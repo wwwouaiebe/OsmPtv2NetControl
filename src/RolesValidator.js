@@ -24,6 +24,7 @@ Changes:
 
 import theOsmData from './OsmData.js';
 import theConfig from './Config.js';
+import theReport from './Report.js';
 
 /* ------------------------------------------------------------------------------------------------------------------------- */
 /**
