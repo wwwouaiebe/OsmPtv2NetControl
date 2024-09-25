@@ -22,11 +22,13 @@ Changes:
 */
 /* ------------------------------------------------------------------------------------------------------------------------- */
 
-import theConfig from './Config.js';
 import theReport from './Report.js';
 import TagsValidator from './TagsValidator.js';
 import RolesValidator from './RolesValidator.js';
 import ContinuousRouteValidator from './ContinuousRouteValidator.js';
+import NameFromtoRefValidator from './NameFromToRefValidator.js';
+import TagsBuilder from './TagsBuilder.js';
+import FixmeValidator from './FixmeValidator.js';
 
 /* ------------------------------------------------------------------------------------------------------------------------- */
 /**
@@ -57,48 +59,6 @@ class OsmRouteValidator {
 	 */
 
 	#ways = [];
-
-	/**
-     * Mandatory tags for TECL and proposed:route
-     * @type {Object}
-     */
-
-	#mandatoryTeclTags = {
-		from : '*',
-		name : '*',
-		network : 'TECL',
-		'network:wikidata' : 'Q3512078',
-		'network:wikipedia' : 'fr:TEC Liège-Verviers',
-		operator : 'TEC',
-		'operator:wikidata' : 'Q366922',
-		'operator:wikipedia' : 'fr:Opérateur de transport de Wallonie',
-		'public_transport:version' : '2',
-		ref : '*',
-		'proposed:route' : '*',
-		to : '*',
-		type : '*',
-		note : 'This relation is a part of the new bus network starting january 2025',
-		// eslint-disable-next-line camelcase
-		opening_date : '2025-01',
-		via : '?'
-	};
-
-	/**
-     * Mandatory tags for all routes
-     * @type {Object}
-     */
-
-	#mandatoryTags = {
-		from : '*',
-		name : '*',
-		network : '*',
-		operator : '*',
-		'public_transport:version' : '2',
-		ref : '*',
-		route : '*',
-		to : '*',
-		type : '*'
-	};
 
 	/**
      * the used tags
@@ -144,152 +104,28 @@ class OsmRouteValidator {
 	}
 
 	/**
-	* Validate the from tag
-	 */
-
-	#validateFrom ( ) {
-
-		if ( ! this.#route?.tags?.from ) {
-
-			// no from tag
-			theReport.addPError (
-				'A from tag is not found for route',
-				null,
-				'R002'
-			);
-		}
-		else if (
-			this.#route?.tags?.from !== this.#platforms[ 0 ]?.tags?.name
-			&&
-			this.#route?.tags?.from !== ( this.#platforms [ 0 ]?.tags [ 'name:' + this.#route?.tags?.operator ] ?? '' )
-		) {
-
-			// from tag is not the same than the name of the first platform
-			theReport.addPError (
-				'The from tag is not equal to the name of the first platform for route ',
-				null,
-				'R003'
-			);
-		}
-	}
-
-	/**
-	* Validate the to tag
-	 */
-
-	#validateTo ( )	{
-		if ( ! this.#route?.tags?.to ) {
-
-			// no to tag
-			theReport.addPError (
-				'A to tag is not found for route',
-				null,
-				'R004'
-			);
-		}
-		else if (
-			this.#route?.tags?.to !== this.#platforms.toReversed ( )[ 0 ]?.tags?.name
-			&&
-			(
-				this.#route?.tags?.to
-				!==
-				( this.#platforms.toReversed ( ) [ 0 ]?.tags [ 'name:' + this.#route?.tags?.operator ] ?? '' )
-			)
-		) {
-
-			// to tag is not the same than the name of the last platform
-			theReport.addPError (
-				'The to tag is not equal to the name of the last platform for route',
-				null,
-				'R005'
-			);
-		}
-	}
-
-	/**
-	* Verify that the route have a from tag, a to tag, a name tag and a ref tag
-	 */
-
-	#haveTagsNameFromToRef ( ) {
-		return this.#route?.tags?.from && this.#route?.tags?.to && this.#route?.tags?.name && this.#route?.tags?.ref;
-	}
-
-	/**
-	* Verify that the name is compliant with the osm rules
-	 */
-
-	#validateName ( ) {
-		let vehicle = theConfig.osmVehicle.substring ( 0, 1 ).toUpperCase ( ) +
-			theConfig.osmVehicle.substring ( 1 ) + ' ';
-		if ( this.#haveTagsNameFromToRef ( ) ) {
-			let goodName = vehicle + this.#route?.tags?.ref + ': ' + this.#route?.tags?.from + ' → ' + this.#route?.tags?.to;
-			if ( this.#route?.tags?.name !== goodName ) {
-				theReport.addPError (
-					'Invalid name ("' + this.#route?.tags?.name + '" but expected "' + goodName + '") for route ',
-					null,
-					'R006'
-				);
-			}
-		}
-		else {
-			theReport.addPError (
-				'Missing from, to, ref or name tags for route',
-				null,
-				'R007'
-			);
-		}
-	}
-
-	/**
-	 * Search the fixme and add it to the report
-	 */
-
-	#searchFixme ( ) {
-		if ( this.#route.tags?.fixme ) {
-			theReport.addPError (
-				'A fixme exists for this relation (' + this.#route.tags?.fixme + ')',
-				null,
-				'R021'
-			);
-		}
-	}
-
-	/**
 	 * Validate a route
      * @param { Object } route The route to validate
 	 */
 
 	validateRoute ( route ) {
-		this.#route = route;
 
-		// title
+		this.#route = route;
+		this.#platforms = [];
+		this.#ways = [];
+
 		theReport.add (
 			'h2',
 			'\nNow validating route ' + ( this.#route.tags.name ?? '' ) + ' ',
 			this.#route
 		);
 
-		// validation
-		this.#platforms = [];
-		this.#ways = [];
-
 		this.#validateOperator ( );
-
-		this.#tags =
-            'TECL' === theConfig.osmNetwork && 'proposed:route' === theConfig.osmType
-            	?
-            	this.#mandatoryTeclTags
-            	:
-            	this.#mandatoryTags;
-
+		new FixmeValidator ( ).validate ( this.#route );
 		new TagsValidator ( this.#route, this.#tags ).validate ( );
 		new RolesValidator ( this.#route, this.#platforms, this.#ways ).validate ( );
 		new ContinuousRouteValidator ( this.#route, this.#ways ).validate ( );
-
-		this.#validateFrom ( );
-		this.#validateTo ( );
-		this.#validateName ( );
-		this.#searchFixme ( );
+		new NameFromtoRefValidator ( this.#route, this.#platforms ).validate ( );
 	}
 
  	/**
@@ -298,8 +134,8 @@ class OsmRouteValidator {
 
 	constructor ( ) {
 		Object.freeze ( this );
+		this.#tags = new TagsBuilder ( ).getRouteTags ( );
 	}
-
 }
 
 export default OsmRouteValidator;

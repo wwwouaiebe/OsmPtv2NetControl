@@ -28,6 +28,8 @@ import theReport from './Report.js';
 import OsmRouteValidator from './OsmRouteValidator.js';
 import MissingRouteMasterValidator from './MissingRouteMasterValidator.js';
 import TagsValidator from './TagsValidator.js';
+import TagsBuilder from './TagsBuilder.js';
+import FixmeValidator from './FixmeValidator.js';
 
 /* ------------------------------------------------------------------------------------------------------------------------- */
 /**
@@ -38,49 +40,18 @@ import TagsValidator from './TagsValidator.js';
 class OsmRouteMasterValidator {
 
 	/**
-     * Mandatory tags for TECL proposed:routes
-     * @type {Object}
-     */
-
-	#mandatoryTeclTags = {
-		description : '*',
-		name : '*',
-		network : 'TECL',
-		'network:wikidata' : 'Q3512078',
-		'network:wikipedia' : 'fr:TEC Liège-Verviers',
-		operator : 'TEC',
-		'operator:wikidata' : 'Q366922',
-		'operator:wikipedia' : 'fr:Opérateur de transport de Wallonie',
-		ref : '*',
-		'ref:TEC' : '*',
-		'proposed:route_master' : 'bus',
-		type : 'proposed:route_master',
-		note : 'This relation is a part of the new bus network starting january 2025',
-		// eslint-disable-next-line camelcase
-		opening_date : '2025-01'
-	};
-
-	/**
-     * Mandatory tags for all routes
-     * @type {Object}
-     */
-
-	#mandatoryTags = {
-		name : '*',
-		network : '*',
-		operator : '*',
-		ref : '*',
-		// eslint-disable-next-line camelcase
-		route_master : '*',
-		type : 'route_master'
-	};
-
-	/**
      * the used tags
      * @type {Object}
      */
 
 	#tags;
+
+	/**
+	 * The currently validated route master
+	 * @type {Object}
+	 */
+
+	#routeMaster;
 
 	/**
 	 * An OsmRouteValidator object
@@ -116,11 +87,10 @@ class OsmRouteMasterValidator {
 	 * verify that
 	 * - the members are relations
 	 * - the relation members are route relations
-	 * @param {Object} routeMaster The route_master to verify
 	 */
 
-	#validateMembers ( routeMaster ) {
-		routeMaster.members.forEach (
+	#validateMembers ( ) {
+		this.#routeMaster.members.forEach (
 			member => {
 				if ( 'relation' === member.type ) {
 					let route = theOsmData.routes.get ( member.ref );
@@ -128,7 +98,7 @@ class OsmRouteMasterValidator {
 						theReport.addPError (
 							'A relation member of the route master is not a ' +
                             theConfig.osmVehicle + ' relation',
-							routeMaster,
+							this.#routeMaster,
 							'M003'
 					 );
 					}
@@ -137,7 +107,7 @@ class OsmRouteMasterValidator {
 					theReport.addPError (
 						'A member of the route master is not a relation (' +
                         member.type + ' ' + member.ref + ' )',
-						routeMaster,
+						this.#routeMaster,
 						'M004'
 					);
 				}
@@ -147,14 +117,13 @@ class OsmRouteMasterValidator {
 
 	/**
 	 * Verify that the route_master have a ref tag
-	 * @param {Object} routeMaster The route_master to verify
 	 */
 
-	#validateRefTag ( routeMaster ) {
-		if ( ! routeMaster?.tags?.ref ) {
+	#validateRefTag ( ) {
+		if ( ! this.#routeMaster?.tags?.ref ) {
 			theReport.addPError (
 				'Route_master without ref tag ',
-				 routeMaster,
+				this.#routeMaster,
 				 'M005'
 			);
 		}
@@ -163,20 +132,19 @@ class OsmRouteMasterValidator {
 	/**
 	 * verify that
 	 * - the ref tag is the same on the route_master and on all route members
-	 * @param {Object} routeMaster The route_master to verify
 	 */
 
-	#validateSameRefTag ( routeMaster ) {
-		routeMaster.members.forEach (
+	#validateSameRefTag ( ) {
+		this.#routeMaster.members.forEach (
 			member => {
 				if ( 'relation' === member.type ) {
 					let route = theOsmData.routes.get ( member.ref );
 					if ( route ) {
-						if ( routeMaster.tags.ref !== route.tags.ref ) {
+						if ( this.#routeMaster.tags.ref !== route.tags.ref ) {
 							theReport.addPError (
-								'ref tag of the route master (' + routeMaster.tags.ref +
+								'ref tag of the route master (' + this.#routeMaster.tags.ref +
 								') is not the same than the ref tag of the route (' + route.tags.ref + ')',
-								routeMaster,
+								this.#routeMaster,
 								'M006'
 							);
 						}
@@ -188,29 +156,26 @@ class OsmRouteMasterValidator {
 
 	/**
 	 * verify that the name tag is compliant with the osm rules
-	 * @param {Object} routeMaster The route_master to verify
 	 */
 
-	#validateName ( routeMaster ) {
+	#validateName ( ) {
 		let vehicle = theConfig.osmVehicle.substring ( 0, 1 ).toUpperCase ( ) +
 			theConfig.osmVehicle.substring ( 1 ) + ' ';
-		if ( routeMaster.tags.name !== vehicle + routeMaster.tags.ref ) {
+		if ( this.#routeMaster.tags.name !== vehicle + this.#routeMaster.tags.ref ) {
 			theReport.addPError (
-				'Invalid name for route_master (must be ' + vehicle + routeMaster.tags.ref + ')'
-				, routeMaster,
+				'Invalid name for route_master (must be ' + vehicle + this.#routeMaster.tags.ref + ')'
+				, this.#routeMaster,
 				'M007'
 			);
 		}
-
 	}
 
 	/**
 	 * validate each route associated to the route_master
-	 * @param {Object} routeMaster The route_master to verify
 	 */
 
-	#validateRoutes ( routeMaster ) {
-		routeMaster.members.forEach (
+	#validateRoutes ( ) {
+		this.#routeMaster.members.forEach (
 			member => {
 				if ( 'relation' === member.type ) {
 					let route = theOsmData.routes.get ( member.ref );
@@ -223,49 +188,28 @@ class OsmRouteMasterValidator {
 	}
 
 	/**
-	 * Search the fixme and add it to the report
-	 * @param {Object} routeMaster The route_master to verify
-	 */
-
-	#searchFixme ( routeMaster ) {
-		if ( routeMaster.tags?.fixme ) {
-			theReport.addPError (
-				'A fixme exists for this relation (' + routeMaster.tags?.fixme + ')',
-				null,
-				'R021'
-			);
-		}
-	}
-
-	/**
 	 * validate completely a route_master
-	 * @param {Object} routeMaster The route_master to verify
 	 */
 
-	#validateRouteMaster ( routeMaster ) {
+	#validateRouteMaster ( ) {
 
 		// heading in the report
 		theReport.add (
 			'h1',
 			'Now validating route_master ' +
-            ( routeMaster.tags.name ?? '' ) + ' ' +
-            ( routeMaster.tags.description ?? '' ) + ' ',
-			routeMaster
+            ( this.#routeMaster.tags.name ?? '' ) + ' ' +
+            ( this.#routeMaster.tags.description ?? '' ) + ' ',
+			this.#routeMaster
 		);
 
 		// validation of the route_master
-		this.#tags =
-            'TECL' === theConfig.osmNetwork && 'proposed:route' === theConfig.osmType
-            	?
-            	this.#mandatoryTeclTags
-            	:
-            	this.#mandatoryTags;
-		new TagsValidator ( routeMaster, this.#tags ).validate ( );
-		this.#validateMembers ( routeMaster );
-		this.#validateSameRefTag ( routeMaster );
-		this.#validateName ( routeMaster );
-		this.#searchFixme ( routeMaster );
-		this.#validateRoutes ( routeMaster );
+		new TagsValidator ( this.#routeMaster, this.#tags ).validate ( );
+		this.#validateMembers ( );
+		this.#validateRefTag ( );
+		this.#validateSameRefTag ( );
+		this.#validateName ( );
+		new FixmeValidator ( ).validate ( this.#routeMaster );
+		this.#validateRoutes ( );
 	}
 
 	/**
@@ -313,12 +257,12 @@ class OsmRouteMasterValidator {
 	 */
 
 	async validate ( ) {
-
 		await new MissingRouteMasterValidator ( ).fetchData ( );
 		this.#validateOnlyOneRouteMaster ( );
 		this.#sortRouteMasters ( ).forEach (
 			routeMaster => {
-				this.#validateRouteMaster ( routeMaster );
+				this.#routeMaster = routeMaster;
+				this.#validateRouteMaster ( );
 			}
 		);
 	}
@@ -329,9 +273,9 @@ class OsmRouteMasterValidator {
 
 	constructor ( ) {
 		this.#osmRouteValidator = new OsmRouteValidator ( );
+		this.#tags = new TagsBuilder ( ).getRouteMasterTags ( );
 		Object.freeze ( this );
 	};
-
 }
 
 export default OsmRouteMasterValidator;
