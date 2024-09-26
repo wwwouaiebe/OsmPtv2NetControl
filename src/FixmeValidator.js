@@ -22,13 +22,40 @@ Changes:
 */
 /* ------------------------------------------------------------------------------------------------------------------------- */
 
+import theReport from './Report.js';
+
+/* ------------------------------------------------------------------------------------------------------------------------- */
 /**
- * The version number
- * @type {String}
+ * fixme tag validator
  */
+/* ------------------------------------------------------------------------------------------------------------------------- */
 
-const theVersion = 'v1.1.0';
+class FixmeValidator {
 
-export default theVersion;
+	/**
+	 *  Validate the fixme tags
+	 * @param {Object} element
+	 */
+
+	validate ( element ) {
+		if ( element?.tags?.fixme ) {
+			theReport.addPError (
+				'A fixme exists for this relation (' + element.tags.fixme + ')',
+				null,
+				'R021'
+			);
+		}
+	}
+
+	/**
+	 * The constructor
+	 */
+
+	constructor ( ) {
+		Object.freeze ( this );
+	}
+}
+
+export default FixmeValidator;
 
 /* --- End of file --------------------------------------------------------------------------------------------------------- */
