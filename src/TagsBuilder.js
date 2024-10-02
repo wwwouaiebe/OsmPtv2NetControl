@@ -50,18 +50,23 @@ class TagsBuilder {
 					'colour',
 					true,
 					[
-						'#006B2D',
-						'#00B9F2',
-						'#164194',
-						'#63B9E9',
-						'#69A82F',
-						'#812B29',
-						'#9ECB84',
-						'#A64224',
-						'#E74011',
-						'#E8308A',
-						'#EF7D00',
-						'#F088B6'
+						'#006B2D', // Sud Connect
+						'#00B9F2', // Nord Urbain
+						'#164194', // Nord Connect
+						'#63B9E9', // Nord Interurbain
+						'#69A82F', // Sud Urbain
+						'#812B29', // Est Connect
+						'#9ECB84', // Sud Interurbain
+						'#A64224', // Est Urbain
+						'#E74011', // Ouest Connect
+						'#E8308A', // Liège Connect
+						'#EF7D00', // Ouest Urbain
+						'#F088B6', // Liège Urbain
+						'#D50911', // Tram
+						'#FFED00', // Busway
+						'#C9956D', // Est interurbain
+						'#F7AB59', // " Ouest interurbain
+						'#000000' // Express
 					]
 				),
 				new TagValue ( 'colour:text', true, [ '#000000', '#FFFFFF' ] ),
@@ -87,18 +92,23 @@ class TagsBuilder {
 					'colour',
 					true,
 					[
-						'#006B2D',
-						'#00B9F2',
-						'#164194',
-						'#63B9E9',
-						'#69A82F',
-						'#812B29',
-						'#9ECB84',
-						'#A64224',
-						'#E74011',
-						'#E8308A',
-						'#EF7D00',
-						'#F088B6'
+						'#006B2D', // Sud Connect
+						'#00B9F2', // Nord Urbain
+						'#164194', // Nord Connect
+						'#63B9E9', // Nord Interurbain
+						'#69A82F', // Sud Urbain
+						'#812B29', // Est Connect
+						'#9ECB84', // Sud Interurbain
+						'#A64224', // Est Urbain
+						'#E74011', // Ouest Connect
+						'#E8308A', // Liège Connect
+						'#EF7D00', // Ouest Urbain
+						'#F088B6', // Liège Urbain
+						'#D50911', // Tram
+						'#FFED00', // Busway
+						'#C9956D', // Est interurbain
+						'#F7AB59', // " Ouest interurbain
+						'#000000' // Express
 					]
 				),
 				new TagValue ( 'colour:text', true, [ '#000000', '#FFFFFF' ] ),
