@@ -52,27 +52,32 @@ class TagsValidator {
      */
 
 	#searchMissingTags ( ) {
-		for ( const [ key, value ] of Object.entries ( this.#tags ) ) {
-			if ( this.#relation.tags [ key ] ) {
-				if (
-					'*' !== value
-                    &&
-                    '?' !== value
-                    &&
-                    this.#relation.tags [ key ] !== value
-				) {
+
+		this.#tags.forEach (
+			tag => {
+				if ( tag.isMandatory && ! this.#relation.tags [ tag.name ] ) {
 					theReport.addPError (
-						'Invalid value ' + this.#relation.tags [ key ] +
-                        ' for tag ' + key + ' (expected ' + value + ')'
+						'No ' + tag.name + ' key for this route'
 					);
 				}
+				if ( this.#relation.tags [ tag.name ] && tag.values ) {
+					if ( Array.isArray ( tag.values ) ) {
+						if ( -1 === tag.values.indexOf ( this.#relation.tags [ tag.name ] ) ) {
+							theReport.addPError (
+								'Invalid value ' + this.#relation.tags [ tag.name ] +
+									' for tag ' + tag.name
+							);
+						}
+					}
+					else if ( this.#relation.tags [ tag.name ] !== tag.values ) {
+						theReport.addPError (
+							'Invalid value ' + this.#relation.tags [ tag.name ] +
+								' for tag ' + tag.name
+						);
+					}
+				}
 			}
-			else if ( '?' !== value ) {
-				theReport.addPError (
-					'No ' + key + ' key for this route'
-				);
-			}
-		}
+		);
 	}
 
 	/**
@@ -84,9 +89,11 @@ class TagsValidator {
 			return;
 		}
 		for ( const key of Object.keys ( this.#relation.tags ) ) {
-			if ( ! this.#tags [ key ] ) {
+			console.log ( key );
+			console.log ( this.#tags [ key ] );
+			if ( ! this.#tags.get ( key ) ) {
 				theReport.addPError (
-					'Unuseful ' + key + ' key for this route'
+					'Unuseful ' + key + ' tag for this route'
 				);
 			}
 		}
@@ -98,7 +105,6 @@ class TagsValidator {
 
 	validate ( ) {
 		this.#searchMissingTags ( );
-
 		this.#searchUnusefulTags ( );
 	}
 
@@ -110,7 +116,11 @@ class TagsValidator {
 
 	constructor ( relation, tags ) {
 		this.#relation = relation;
-		this.#tags = tags;
+		this.#tags = new Map ( );
+		tags.forEach (
+			tag => { this.#tags.set ( tag.name, tag ); }
+		);
+
 		Object.freeze ( this );
 	}
 }
