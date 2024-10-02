@@ -25,6 +25,10 @@ On the main web page complete:
 - click on the 'go' button to start the program
 - click on the 'errors button' to show only the errors or show all
 
+## New JOSM layer checkbox
+
+When selected, a new layer is created in JOSM when a JOSM button is clicked
+
 ## URL parameters
 
 You can call the web page with some parameters, so the controls on the web page are completed with your favorite data.

@@ -23,6 +23,7 @@ Changes:
 /* ------------------------------------------------------------------------------------------------------------------------- */
 
 import theConfig from './Config.js';
+import TagValue from './TagValue.js';
 
 /* ------------------------------------------------------------------------------------------------------------------------- */
 /**
@@ -44,42 +45,78 @@ class TagsBuilder {
 		{
 			network : 'TECL',
 			type : 'proposed:route',
-			routeTags : {
-				from : '*',
-				name : '*',
-				network : 'TECL',
-				'network:wikidata' : 'Q3512078',
-				'network:wikipedia' : 'fr:TEC Liège-Verviers',
-				operator : 'TEC',
-				'operator:wikidata' : 'Q366922',
-				'operator:wikipedia' : 'fr:Opérateur de transport de Wallonie',
-				'public_transport:version' : '2',
-				ref : '*',
-				'proposed:route' : '*',
-				to : '*',
-				type : '*',
-				note : 'This relation is a part of the new bus network starting january 2025',
-				// eslint-disable-next-line camelcase
-				opening_date : '2025-01',
-				via : '?'
-			},
-			routeMasterTags : {
-				description : '*',
-				name : '*',
-				network : 'TECL',
-				'network:wikidata' : 'Q3512078',
-				'network:wikipedia' : 'fr:TEC Liège-Verviers',
-				operator : 'TEC',
-				'operator:wikidata' : 'Q366922',
-				'operator:wikipedia' : 'fr:Opérateur de transport de Wallonie',
-				ref : '*',
-				'ref:TEC' : '*',
-				'proposed:route_master' : 'bus',
-				type : 'proposed:route_master',
-				note : 'This relation is a part of the new bus network starting january 2025',
-				// eslint-disable-next-line camelcase
-				opening_date : '2025-01'
-			}
+			routeTags : [
+				new TagValue (
+					'colour',
+					true,
+					[
+						'#006B2D',
+						'#00B9F2',
+						'#164194',
+						'#63B9E9',
+						'#69A82F',
+						'#812B29',
+						'#9ECB84',
+						'#A64224',
+						'#E74011',
+						'#E8308A',
+						'#EF7D00',
+						'#F088B6'
+					]
+				),
+				new TagValue ( 'colour:text', true, [ '#000000', '#FFFFFF' ] ),
+				new TagValue ( 'from', true ),
+				new TagValue ( 'name', true ),
+				new TagValue ( 'network', true, 'TECL' ),
+				new TagValue ( 'network:wikidata', true, 'Q3512078' ),
+				new TagValue ( 'network:wikipedia', true, 'fr:TEC Liège-Verviers' ),
+				new TagValue ( 'operator', true, 'TEC' ),
+				new TagValue ( 'operator:wikidata', true, 'Q366922' ),
+				new TagValue ( 'operator:wikipedia', true, 'fr:Opérateur de transport de Wallonie' ),
+				new TagValue ( 'public_transport:version', true, '2' ),
+				new TagValue ( 'ref', true ),
+				new TagValue ( 'proposed:route', true, [ 'bus', 'tram' ] ),
+				new TagValue ( 'to', true ),
+				new TagValue ( 'type', true, 'proposed:route' ),
+				new TagValue ( 'note', true, 'This relation is a part of the new bus network starting january 2025' ),
+				new TagValue ( 'opening_date', true, '2025-01' ),
+				new TagValue ( 'via', false )
+			],
+			routeMasterTags : [
+				new TagValue (
+					'colour',
+					true,
+					[
+						'#006B2D',
+						'#00B9F2',
+						'#164194',
+						'#63B9E9',
+						'#69A82F',
+						'#812B29',
+						'#9ECB84',
+						'#A64224',
+						'#E74011',
+						'#E8308A',
+						'#EF7D00',
+						'#F088B6'
+					]
+				),
+				new TagValue ( 'colour:text', true, [ '#000000', '#FFFFFF' ] ),
+				new TagValue ( 'description', true ),
+				new TagValue ( 'name', true ),
+				new TagValue ( 'network', true, 'TECL' ),
+				new TagValue ( 'network:wikidata', true, 'Q3512078' ),
+				new TagValue ( 'network:wikipedia', true, 'fr:TEC Liège-Verviers' ),
+				new TagValue ( 'operator', true, 'TEC' ),
+				new TagValue ( 'operator:wikidata', true, 'Q366922' ),
+				new TagValue ( 'operator:wikipedia', true, 'fr:Opérateur de transport de Wallonie' ),
+				new TagValue ( 'ref', true ),
+				new TagValue ( 'ref:TEC', true ),
+				new TagValue ( 'proposed:route_master', true, [ 'bus', 'tram' ] ),
+				new TagValue ( 'type', true, 'proposed:route_master' ),
+				new TagValue ( 'note', true, 'This relation is a part of the new bus network starting january 2025' ),
+				new TagValue ( 'opening_date', true, '2025-01' )
+			]
 		}
 	];
 
@@ -89,26 +126,25 @@ class TagsBuilder {
 	 */
 
 	#defaultTags = {
-		routeTags : {
-			from : '*',
-			name : '*',
-			network : '*',
-			operator : '*',
-			'public_transport:version' : '2',
-			ref : '*',
-			route : '*',
-			to : '*',
-			type : '*'
-		},
-		routeMasterTags : {
-			name : '*',
-			network : '*',
-			operator : '*',
-			ref : '*',
-			// eslint-disable-next-line camelcase
-			route_master : '*',
-			type : 'route_master'
-		}
+		routeTags : [
+			new TagValue ( 'from', true ),
+			new TagValue ( 'name', true ),
+			new TagValue ( 'network', true, [ 'TECB', 'TECC', 'TECH', 'TECL', 'TECN', 'TECX', 'IBXL' ] ),
+			new TagValue ( 'operator', true, [ 'TEC', 'STIB/MIVB' ] ),
+			new TagValue ( 'public_transport:version', true, '2' ),
+			new TagValue ( 'ref', true ),
+			new TagValue ( 'route', true, [ 'bus', 'subway', 'tram' ] ),
+			new TagValue ( 'to', true ),
+			new TagValue ( 'type', true, 'route' )
+		],
+		routeMasterTags : [
+			new TagValue ( 'name', true ),
+			new TagValue ( 'network', true, [ 'TECB', 'TECC', 'TECH', 'TECL', 'TECN', 'TECX', 'IBXL' ] ),
+			new TagValue ( 'operator', true, [ 'TEC', 'STIB/MIVB' ] ),
+			new TagValue ( 'ref', true ),
+			new TagValue ( 'route_master', true, [ 'bus', 'subway', 'tram' ] ),
+			new TagValue ( 'type', true, 'route_master' )
+		]
 	};
 
 	/**

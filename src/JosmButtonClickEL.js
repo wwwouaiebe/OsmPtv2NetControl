@@ -51,9 +51,17 @@ class JosmButtonClickEL {
 		// changing the button color
 		event.target.classList.add ( 'josmButtonVisited' );
 
+		let newJosmLayer =
+			document.getElementById ( 'newJosmLayer' ).checked
+				?
+				'true'
+				:
+				'false';
+
 		// calling josm
 		await fetch (
-			'http://localhost:8111/load_object?new_layer=true&relation_members=true&objects=r' + osmObjId
+			'http://localhost:8111/load_object?new_layer=' + newJosmLayer +
+			'&relation_members=true&objects=r' + osmObjId
 		)
 			.then (
 				response => {
