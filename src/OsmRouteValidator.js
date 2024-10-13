@@ -116,7 +116,9 @@ class OsmRouteValidator {
 
 		theReport.add (
 			'h2',
-			'\nNow validating route ' + ( this.#route.tags.name ?? '' ) + ' ',
+			'\nNow validating route ' +
+			( this.#route.tags.name ?? '' ) + ' ' +
+			( this.#route.tags.via ? 'via ' + this.#route.tags.via.replace ( ';', ', ' ) + ' ' : '' ),
 			this.#route
 		);
 

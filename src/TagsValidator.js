@@ -89,8 +89,6 @@ class TagsValidator {
 			return;
 		}
 		for ( const key of Object.keys ( this.#relation.tags ) ) {
-			console.log ( key );
-			console.log ( this.#tags [ key ] );
 			if ( ! this.#tags.get ( key ) ) {
 				theReport.addPError (
 					'Unuseful ' + key + ' tag for this route'
