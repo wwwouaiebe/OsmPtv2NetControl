@@ -158,7 +158,7 @@ class Report {
 
 	add ( htmlTag, text, osmObject ) {
 
-		let osmLink = osmObject ? '(' + this.getOsmLink ( osmObject ) + ')' : '';
+		let osmLink = osmObject ? '(' + this.getOsmLink ( osmObject ) + ' )' : '';
 		if ( 'browser' === theConfig.engine ) {
 			let josmEdit = '';
 			if ( osmObject ) {
