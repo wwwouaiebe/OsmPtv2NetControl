@@ -83,7 +83,14 @@ class TagsBuilder {
 				new TagValue ( 'proposed:route', true, [ 'bus', 'tram' ] ),
 				new TagValue ( 'to', true ),
 				new TagValue ( 'type', true, 'proposed:route' ),
-				new TagValue ( 'note', true, 'This relation is a part of the new bus network starting january 2025' ),
+				new TagValue (
+					'note',
+					true,
+					[
+						'This relation is a part of the new bus network starting january 2025',
+						'This relation is a part of the new tram network starting january 2025'
+					]
+				),
 				new TagValue ( 'opening_date', true, '2025-01' ),
 				new TagValue ( 'via', false )
 			],
@@ -124,7 +131,14 @@ class TagsBuilder {
 				new TagValue ( 'ref:TEC', true ),
 				new TagValue ( 'proposed:route_master', true, [ 'bus', 'tram' ] ),
 				new TagValue ( 'type', true, 'proposed:route_master' ),
-				new TagValue ( 'note', true, 'This relation is a part of the new bus network starting january 2025' ),
+				new TagValue (
+					'note',
+					true,
+					[
+						'This relation is a part of the new bus network starting january 2025',
+						'This relation is a part of the new tram network starting january 2025'
+					]
+				),
 				new TagValue ( 'opening_date', true, '2025-01' )
 			]
 		}
