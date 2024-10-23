@@ -57,7 +57,9 @@ class TagsValidator {
 			tag => {
 				if ( tag.isMandatory && ! this.#relation.tags [ tag.name ] ) {
 					theReport.addPError (
-						'No ' + tag.name + ' key for this route'
+						'No ' + tag.name + ' key for this route',
+						null,
+						R019
 					);
 				}
 				if ( this.#relation.tags [ tag.name ] && tag.values ) {
@@ -65,14 +67,18 @@ class TagsValidator {
 						if ( -1 === tag.values.indexOf ( this.#relation.tags [ tag.name ] ) ) {
 							theReport.addPError (
 								'Invalid value ' + this.#relation.tags [ tag.name ] +
-									' for tag ' + tag.name
+									' for tag ' + tag.name,
+								null,
+								R020
 							);
 						}
 					}
 					else if ( this.#relation.tags [ tag.name ] !== tag.values ) {
 						theReport.addPError (
 							'Invalid value ' + this.#relation.tags [ tag.name ] +
-								' for tag ' + tag.name
+								' for tag ' + tag.name,
+							null,
+							R020
 						);
 					}
 				}

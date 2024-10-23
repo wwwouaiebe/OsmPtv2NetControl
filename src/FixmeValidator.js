@@ -42,7 +42,7 @@ class FixmeValidator {
 			theReport.addPError (
 				'A fixme exists for this relation (' + element.tags.fixme + ')',
 				null,
-				'R021'
+				'W002'
 			);
 		}
 	}

@@ -74,13 +74,6 @@ class Config {
 	osmVehicle;
 
 	/**
-	 * the engine used ( 'browser' or 'nodejs')
-	 * @type {string}
-	 */
-
-	engine;
-
-	/**
 	 * The constructor
 	 */
 
@@ -91,7 +84,6 @@ class Config {
 		this.osmNetwork = 'TECL';
 		this.osmVehicle = 'bus';
 		this.appDir = '';
-		this.engine = '';
 	}
 
 }

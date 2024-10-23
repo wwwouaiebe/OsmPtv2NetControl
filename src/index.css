@@ -182,6 +182,14 @@ P.error a{
     text-decoration: underline;
 }
 
+P.warning {
+    color: rgb(255, 0, 255);
+}
+
+P.warning a{
+    text-decoration: underline;
+}
+
 a.josmedit:visited {
 	color : gray;
 }
