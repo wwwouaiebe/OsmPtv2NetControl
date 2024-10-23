@@ -49,7 +49,7 @@ class GoButtonClickEL {
 		document.getElementById ( 'errorsOnlyInput' ).value = 'Errors only';
 		report.classList.remove ( 'errorsOnly' );
 
-		new AppLoader ( ).loadApp ( { engine : 'browser' } );
+		new AppLoader ( ).loadApp ( );
 	}
 }
 

@@ -172,8 +172,18 @@ class RolesValidator {
 			'residential',
 			'unclassified',
 			'living_street',
-			'busway'
+			'busway',
+			'construction'
 		];
+
+		if ( 'construction' === way?.tags?.highway ) {
+			theReport.addPError (
+				'A road under construction (' + theReport.getOsmLink ( way ) +
+					') is used as way for the route',
+				null,
+				'W001'
+			);
+		}
 		if (
 			-1 === validBusHighways.indexOf ( way?.tags?.highway )
 			&&

@@ -40,10 +40,11 @@ import OsmRouteMasterValidator from './OsmRouteMasterValidator.js';
 class AppLoader {
 
 	/**
-	* Complete theConfig object from the web page
+	* Complete theConfig object from the app parameters (nodejs) or the options parameter (browser)
+	* @returns {boolean} True when the config is succesfully created
 	 */
 
-	#createConfigForBrowser ( ) {
+	async #createConfig ( ) {
 
 		theConfig.osmNetwork = document.getElementById ( 'osmNetworkInput' ).value;
 		theConfig.osmVehicle = document.getElementById ( 'osmVehicleSelect' ).value;
@@ -62,57 +63,6 @@ class AppLoader {
 			theConfig.osmRelation = '0';
 		}
 		theConfig.osmRelation = Number.parseInt ( theConfig.osmRelation );
-	}
-
-	/**
-	* Complete theConfig object from the app parameters
-	 */
-
-	#createConfigForNode ( ) {
-		theConfig.appDir = process.cwd ( ) + '/node_modules/osmbus2mysql/src';
-		process.argv.forEach (
-			arg => {
-				const argContent = arg.split ( '=' );
-				switch ( argContent [ 0 ] ) {
-				case '--osmType' :
-					theConfig.osmType = argContent [ 1 ] || theConfig.osmType;
-					break;
-				case '--osmArea' :
-					theConfig.osmArea = argContent [ 1 ] || theConfig.osmArea;
-					break;
-				case '--osmRelation' :
-					theConfig.osmRelation = argContent [ 1 ] || theConfig.osmRelation;
-					break;
-				case '--osmNetwork' :
-					theConfig.osmNetwork = argContent [ 1 ] || theConfig.osmNetwork;
-					break;
-				case '--osmVehicle' :
-					theConfig.osmVehicle = argContent [ 1 ] || theConfig.osmVehicle;
-					break;
-				default :
-					break;
-				}
-			}
-		);
-
-		theConfig.appDir = process.argv [ 1 ];
-		theConfig.engine = 'nodejs';
-	}
-
-	/**
-	* Complete theConfig object from the app parameters (nodejs) or the options parameter (browser)
-	* @param {?Object} options The options for the app when the browser is used
-	* @returns {boolean} True when the config is succesfully created
-	 */
-
-	async #createConfig ( options ) {
-
-		if ( 'browser' === options?.engine ) {
-			this.#createConfigForBrowser ( );
-		}
-		else {
-			this.#createConfigForNode ( );
-		}
 
 		// if osmArea is different of 0, osmArea must be 36 + osmArea with 6 digits (see Overpass-api rules)
 		if ( 0 !== theConfig.osmArea ) {
@@ -152,12 +102,11 @@ class AppLoader {
 
 	/**
 	 * Load the app, searching all the needed infos to run the app correctly
-	 * @param {Object} options Options for the program
 	 */
 
-	async loadApp ( options ) {
+	async loadApp ( ) {
 
-		if ( ! this.#createConfig ( options ) ) {
+		if ( ! this.#createConfig ( ) ) {
 			return;
 		}
 

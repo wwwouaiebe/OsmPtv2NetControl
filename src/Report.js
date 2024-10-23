@@ -22,7 +22,6 @@ Changes:
 */
 /* ------------------------------------------------------------------------------------------------------------------------- */
 
-import theConfig from './Config.js';
 import theOsmData from './OsmData.js';
 import JosmButtonClickEL from './JosmButtonClickEL.js';
 
@@ -57,11 +56,25 @@ class Report {
 	#errorCounter = 0;
 
 	/**
+	* A counter for warnings
+	* @type {Number}
+	 */
+
+	#warningCounter = 0;
+
+	/**
 	* The value of the errorCounter
 	@type {Number}
 	 */
 
 	get errorCounter ( ) { return this.#errorCounter; }
+
+	/**
+	* The value of the warningCounter
+	@type {Number}
+	 */
+
+	get warningCounter ( ) { return this.#warningCounter; }
 
    	/**
 	 * open the report.
@@ -71,56 +84,15 @@ class Report {
 
 	async open ( ) {
 		this.#errorCounter = 0;
+		this.#warningCounter = 0;
 
 		this.#errorHelp = ( await import ( './ErrorsHelpEN.js' ) ).errorHelp;
-		if ( 'browser' === theConfig.engine ) {
-			this.#report = document.getElementById ( 'report' );
-			while ( this.#report.firstChild ) {
-				this.#report.removeChild ( this.#report.firstChild );
-			}
-			document.getElementById ( 'waitAnimation' ).style.visibility = 'visible';
-			this.add ( 'h1', '??? errors found' );
+		this.#report = document.getElementById ( 'report' );
+		while ( this.#report.firstChild ) {
+			this.#report.removeChild ( this.#report.firstChild );
 		}
-		else {
-			this.#report =
-				'<!DOCTYPE html>\n' +
-				'<!--\n' +
-				'/*\n' +
-				'This  program is free software;\n' +
-				'you can redistribute it and/or modify it under the terms of the\n' +
-				'GNU General Public License as published by the Free Software Foundation;\n' +
-				'either version 3 of the License, or any later version.\n' +
-				'\n' +
-				'This program is distributed in the hope that it will be useful,\n' +
-				'but WITHOUT ANY WARRANTY; without even the implied warranty of\n' +
-				'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n' +
-				'GNU General Public License for more details.\n' +
-				'\n' +
-				'You should have received a copy of the GNU General Public License\n' +
-				'along with this program; if not, write to the Free Software\n' +
-				'Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA\n' +
-				'*/\n' +
-				'-->\n' +
-				'<html>\n' +
-				'	<head>\n' +
-				'		<meta charset="UTF-8" />\n' +
-				'		<meta name="viewport" content="width=device-width, initial-scale=1.0" />\n' +
-				'		<title>wwwouaiebe - osm bus relations report</title>\n' +
-				'		<link rel="stylesheet" href="report.css" />\n' +
-				'	</head>\n' +
-				'	<body>\n';
-
-			this.add (
-				'p',
-				'Request parameters: type = ' +
-						theConfig.osmType +
-						' - network = ' + theConfig.osmNetwork +
-						' - vehicle = ' + theConfig.osmVehicle +
-						( 0 === theConfig.osmArea ? '' : ' - area =  ' + theConfig.osmArea ) +
-						( 0 === theConfig.osmRelation ? '' : ' - relation = ' + theConfig.osmRelation ) +
-						' - ' + new Date ().toString ( )
-			);
-		}
+		document.getElementById ( 'waitAnimation' ).style.visibility = 'visible';
+		this.add ( 'h1', '??? errors found' );
 	}
 
   	/**
@@ -131,22 +103,16 @@ class Report {
 
 	async close ( ) {
 
-		if ( 'nodejs' === theConfig.engine ) {
-			this.#report +=
-				'	</body>\n' +
-				'</html>';
-			( await import ( 'fs' ) ).writeFileSync ( './report/index.html', this.#report );
-		}
-		else {
-			document.getElementById ( 'waitAnimation' ).style.visibility = 'hidden';
-			this.#report.firstChild.textContent = String ( this.#errorCounter ) + ' errors found - ' +
+		document.getElementById ( 'waitAnimation' ).style.visibility = 'hidden';
+		this.#report.firstChild.textContent =
+			String ( this.#errorCounter ) + ' errors found - ' +
+			String ( this.#warningCounter ) + ' warnings found - ' +
 			String ( theOsmData.routeMasters.size ) + ' route_master and ' +
 			String ( theOsmData.routes.size ) + ' routes controlled';
-			let josmButtons = document.getElementsByClassName ( 'josmButton' );
-			for ( let counter = 0; counter < josmButtons.length; counter ++ ) {
-				josmButtons[ counter ].addEventListener ( 'click', new JosmButtonClickEL ( ) );
-			}
-		};
+		let josmButtons = document.getElementsByClassName ( 'josmButton' );
+		for ( let counter = 0; counter < josmButtons.length; counter ++ ) {
+			josmButtons[ counter ].addEventListener ( 'click', new JosmButtonClickEL ( ) );
+		}
 	}
 
   	/**
@@ -159,20 +125,15 @@ class Report {
 	add ( htmlTag, text, osmObject ) {
 
 		let osmLink = osmObject ? '(' + this.getOsmLink ( osmObject ) + ' )' : '';
-		if ( 'browser' === theConfig.engine ) {
-			let josmEdit = '';
-			if ( osmObject ) {
-				josmEdit = '<button title="Edit the relation with JOSM\nJOSM must be already opened!" ' +
+		let josmEdit = '';
+		if ( osmObject ) {
+			josmEdit = '<button title="Edit the relation with JOSM\nJOSM must be already opened!" ' +
 					'class="josmButton" data-osm-obj-id="' +
 					( osmObject.id ?? osmObject.ref ) + '" >JOSM</button>';
-			}
-			let htmlElement = document.createElement ( htmlTag );
-			htmlElement.innerHTML = text + osmLink + josmEdit;
-			this.#report.appendChild ( htmlElement );
 		}
-		else {
-			this.#report += '<' + htmlTag + '>' + text + osmLink + '</ ' + htmlTag + '>\n';
-		}
+		let htmlElement = document.createElement ( htmlTag );
+		htmlElement.innerHTML = text + osmLink + josmEdit;
+		this.#report.appendChild ( htmlElement );
 	}
 
 	/**
@@ -184,40 +145,28 @@ class Report {
 
 	addPError ( text, osmObject, errorCode ) {
 
-		if ( 'browser' === theConfig.engine ) {
-			let josmEdit = '';
-			if ( osmObject ) {
-				josmEdit = '<button title="Edit the relation with JOSM\nJOSM must be already opened!" ' +
-					'class="josmButton" data-osm-obj-id="' +
-					osmObject.id + '" >JOSM </button>';
-			}
-			let htmlElement = document.createElement ( 'p' );
-			htmlElement.classList.add ( 'error' );
-			if ( errorCode ) {
-				let title = this.#errorHelp [ errorCode ] + '\n';
+		let isWarning = 'W' === errorCode [ 0 ];
 
-				/*
-				for ( const property in osmObject.tags ) {
-					title += '\n' + property + '=' + osmObject.tags [ property ];
-				}
-				*/
-
-				htmlElement.title = title;
-			}
-			htmlElement.innerHTML = text + josmEdit;
-			this.#report.appendChild ( htmlElement );
+		let josmEdit = '';
+		if ( osmObject ) {
+			josmEdit = '<button title="Edit the relation with JOSM\nJOSM must be already opened!" ' +
+				'class="josmButton" data-osm-obj-id="' +
+				osmObject.id + '" >JOSM </button>';
+		}
+		let htmlElement = document.createElement ( 'p' );
+		htmlElement.classList.add ( isWarning ? 'warning' : 'error' );
+		if ( errorCode ) {
+			let title = this.#errorHelp [ errorCode ] + '\n';
+			htmlElement.title = title;
+		}
+		htmlElement.innerHTML = text + josmEdit;
+		this.#report.appendChild ( htmlElement );
+		if ( isWarning ) {
+			this.#warningCounter ++;
 		}
 		else {
-			let josmEdit = '';
-			if ( osmObject ) {
-				josmEdit = ' ( <a class ="josmedit" target="_blank" ' +
-					'href="http://localhost:8111/load_object?new_layer=true&relation_members=true&objects=r' + osmObject.id +
-					'">Edit with JOSM</a> )';
-			}
-			this.#report += '       <p class="error">' + text + josmEdit + '</p>\n';
+			this.#errorCounter ++;
 		}
-
-		this.#errorCounter ++;
 	}
 
 	/**
