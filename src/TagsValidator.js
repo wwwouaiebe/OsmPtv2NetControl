@@ -59,7 +59,7 @@ class TagsValidator {
 					theReport.addPError (
 						'No ' + tag.name + ' key for this route',
 						null,
-						R019
+						'R019'
 					);
 				}
 				if ( this.#relation.tags [ tag.name ] && tag.values ) {
@@ -69,7 +69,7 @@ class TagsValidator {
 								'Invalid value ' + this.#relation.tags [ tag.name ] +
 									' for tag ' + tag.name,
 								null,
-								R020
+								'R020'
 							);
 						}
 					}
@@ -78,7 +78,7 @@ class TagsValidator {
 							'Invalid value ' + this.#relation.tags [ tag.name ] +
 								' for tag ' + tag.name,
 							null,
-							R020
+							'R020'
 						);
 					}
 				}
