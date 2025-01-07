@@ -166,6 +166,7 @@ class TagsBuilder {
 			new TagValue ( 'network', true, [ 'TECB', 'TECC', 'TECH', 'TECL', 'TECN', 'TECX', 'IBXL' ] ),
 			new TagValue ( 'operator', true, [ 'TEC', 'STIB/MIVB' ] ),
 			new TagValue ( 'ref', true ),
+			new TagValue ( 'description', true ),
 			new TagValue ( 'route_master', true, [ 'bus', 'subway', 'tram' ] ),
 			new TagValue ( 'type', true, 'route_master' )
 		]

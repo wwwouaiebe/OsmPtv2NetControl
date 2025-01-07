@@ -145,7 +145,7 @@ class Report {
 
 	addPError ( text, osmObject, errorCode ) {
 
-		let isWarning = 'W' === errorCode [ 0 ];
+		let isWarning = ( ! errorCode || 'W' === errorCode [ 0 ] );
 
 		let josmEdit = '';
 		if ( osmObject ) {
